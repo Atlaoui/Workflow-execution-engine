@@ -1,0 +1,100 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\date{\today}
+\author{Tarik Atlaoui}
+\lstset{frame=tb,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\begin{document}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\begin{titlepage}
+	\enlargethispage{2cm}
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+	\center
+	\textsc{\LARGE
+	SORBONNE UNIVERSITÉ 
+	} \\[1cm]
+	\HRule \\[0.4cm]
+	{ \huge \bfseries Réponse au question du projet Moteur d’exécution de workflows \\[0.15cm] }
+	\HRule \\[4cm]
+	\large{Tarik Atlaoui} \\[3cm]
+	05 Mai 2020 \\[3cm]
+
+\end{titlepage}
+
+\textbf{1. Pourquoi ne peut-on pas utiliser le nom de la méthode en tant qu’identifiant de tâche ?}
+\newline
+\newline
+   Si on utiliser le nom d'une méthode en tant qu'identifiant de tâche l'utilisateur ne pourrais pas surcharger les méthodes.
+   Car deux méthode avec le meme nom mais des parametre différent représenterais que un seul noeud
+\newline
+\newline
+\textbf{2. Donner les grandes lignes de votre algorithme de la méthode execute. Il est attendu un
+algorithme décrit de manière synthétique et non un copier/coller de votre code.}
+\newline
+\newline
+\textbf{3. Décrire comment vous avez assuré le parallélisme des tâches indépendantes.}
+\newline
+\newline
+\textbf{1. Décrire votre protocole de communication}
+\newline
+\newline
+\textbf{2. Justifier votre choix de l’API de communication que vous avez utilisée.}
+\newline
+\newline
+\textbf{3. Quelle hypothèse doit-on faire sur le type des objets du contexte ? Justifiez.}
+\newline
+\newline
+\textbf{4. Quel mécanisme avez-vous utilisé pour la notification d’avancement au client ?}
+\newline
+\newline
+\textbf{1. Quel est le protocole de communications entre maître-esclaves et éventuellement entre
+esclave-esclave ?}
+\newline
+\newline
+\textbf{2. Comment le maître affecte ses tâches équitablement sur les esclaves ?}
+\newline
+\newline
+\textbf{3. Comment les esclaves sont assurés de respecter leur borne de tâche courante ?}
+\newline
+\newline
+\textbf{4. Comment gérez-vous la communication d’un résultat entre deux tâches dépendantes ? Don-
+ner les avantages et les inconvénients de votre solution.}
+\newline
+\newline
+\textbf{5. (niveau 2) Comment gérez-vous le fait d’avoir plusieurs jobs en cours d’exécution sur le
+cluster ?}
+\newline
+\newline
+\textbf{6. (niveau 3) Décrire le mécanisme qui permet de détecter la panne d’un esclave. Comment
+gérez-vous la réaffectation des tâches perdues ?}
+
+\end{document}
