@@ -10,10 +10,11 @@ import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JobExecutorSequential extends JobExecutor{
-    public JobExecutorSequential(Job job) {
+public class JobExecutorParallel extends JobExecutor{
+    public JobExecutorParallel(Job job) {
         super(job);
     }
+
 
     @Override
     public Map<String, Object> execute() throws Exception {
@@ -64,30 +65,31 @@ public class JobExecutorSequential extends JobExecutor{
                     if (p.isAnnotationPresent(Context.class)) {
                         //System.out.println("Cont = "+p.getAnnotation(Context.class).value());
                         args[index] = jobV.getJob().getContext().get(p.getAnnotation(Context.class).value());
-                      //  System.out.println("argument cont = "+args[index]);
+                        //  System.out.println("argument cont = "+args[index]);
                     } else {
-                      //  System.out.println("Link = "+p.getAnnotation(LinkFrom.class).value());
+                        //  System.out.println("Link = "+p.getAnnotation(LinkFrom.class).value());
                         args[index] = retValues.get(p.getAnnotation(LinkFrom.class).value());
-                    //    System.out.println("argument from = "+args[index]);
+                        //    System.out.println("argument from = "+args[index]);
                     }
                     index++;
                 }
                 retValues.put(funcName,m.invoke(jobV.getJob(),args));
             }
         }
-            return retValues;
+        return retValues;
     }
 
     private boolean hasOnlyContexteParam(Parameter[] parameters) {
         for(Parameter p : parameters) {
             if (p.isAnnotationPresent(LinkFrom.class)){
-             //   System.out.println("has link = "+p.getAnnotation(LinkFrom.class).value());
+                //   System.out.println("has link = "+p.getAnnotation(LinkFrom.class).value());
                 return false;
             }
 
-         //   else
-          //      System.out.println("has only = "+p.getAnnotation(Context.class).value());
+            //   else
+            //      System.out.println("has only = "+p.getAnnotation(Context.class).value());
         }
         return true;
     }
+
 }
