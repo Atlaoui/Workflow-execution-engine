@@ -3,12 +3,12 @@ package srcs.workflow.test;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import srcs.workflow.job.Job;
 
@@ -26,7 +26,7 @@ public abstract class JobForTest extends Job {
 	
 	private final File working_dir;
 	
-	private  List<String> tasksequence=null;
+	private  Map<String,StartStop> mapping_task_startstop=null;
 	private  Map<String,Long> mapping_task_thread=null;
 	private  Map<String,Integer> mapping_task_pid=null;
 	
@@ -51,7 +51,7 @@ public abstract class JobForTest extends Job {
 			f.delete();
 		}
 		mapping_task_thread=null;
-		tasksequence=null;
+		mapping_task_startstop=null;
 		mapping_task_pid=null;
 	}
 		
@@ -62,11 +62,29 @@ public abstract class JobForTest extends Job {
 		return mapping_task_pid;
 	}
 	
-	public  List<String> getTaskSequence(){
-		if(tasksequence == null) {
+	public  Map<String,StartStop> getMappingTaskStartStop(){
+		if(mapping_task_startstop == null) {
 			computeStat();
 		}
-		return tasksequence;
+		return mapping_task_startstop;
+	}
+	
+	public static class StartStop{
+		private final long start;
+		private final long stop;
+		
+		public StartStop(long start, long stop) {
+			this.start=start;
+			this.stop=stop;
+		}
+
+		public long getStart() {
+			return start;
+		}
+
+		public long getStop() {
+			return stop;
+		}		
 	}
 	
 	public  Map<String,Long> getMappingTaskThread(){
@@ -77,37 +95,46 @@ public abstract class JobForTest extends Job {
 	}
 	
 	private void computeStat() {
-		File[] list_files = working_dir.listFiles();
-		Arrays.sort(list_files, new Comparator<File>() {
-			@Override
-			public int compare(File o1, File o2) {
-				String tmsp1 = o1.getName().split(SEP)[3];
-				String tmsp2 = o2.getName().split(SEP)[3];
-				
-				return Long.valueOf(Long.parseLong(tmsp1)).compareTo(Long.valueOf(Long.parseLong(tmsp2)));
-			}			
-		});
-		tasksequence = Arrays.asList(list_files).stream().map(f-> f.getName().split(SEP)[0]).collect(Collectors.toList());		
+		List<String> ends = new ArrayList<>();
+		List<String> begins = new ArrayList<>();
+		for(File f : working_dir.listFiles()) {
+			String name = f.getName();
+			if(name.contains("end")) {
+				ends.add(name);
+			}else {
+				begins.add(name);
+			}
+		}
+			
+		mapping_task_startstop=new HashMap<>();
 		mapping_task_thread = new HashMap<>();
 		mapping_task_pid = new HashMap<>();
-		for(File f : list_files) {
-			String tmp[] = f.getName().split(SEP);
-			String id_task = tmp[0];
-			String pid = tmp[1];
-			String id_thread = tmp[2];
-			
+		for(String end : ends) {
+			String tmp[] =end.split(SEP);
+			String id_task = tmp[1];
+			String pid = tmp[2];
+			String id_thread = tmp[3];
+				
 			mapping_task_thread.put(id_task, Long.parseLong(id_thread));
 			mapping_task_pid.put(id_task, Integer.parseInt(pid));
+				
+			long stop = Long.parseLong(tmp[4]);
+			for(String begin : begins) {
+				String tmp2[] =begin.split(SEP);
+				if(tmp2[1].equals(id_task) && tmp2[2].equals(pid) && tmp2[3].equals(id_thread)) {
+					 long start = Long.parseLong(tmp2[4]);
+					 mapping_task_startstop.put(id_task, new StartStop(start, stop));
+					 break;
+				}
+			}				
 		}
-		
 	}
-	
-	
+		
 	protected void begin(String id_task) {
 		String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 		
 		
-		File f = new File(working_dir, id_task+SEP+pid+SEP+Thread.currentThread().getId()+SEP+System.currentTimeMillis());
+		File f = new File(working_dir, "begin"+SEP+id_task+SEP+pid+SEP+Thread.currentThread().getId()+SEP+System.currentTimeMillis());
 		try {
 			f.createNewFile();
 		} catch (IOException e) {
@@ -116,6 +143,14 @@ public abstract class JobForTest extends Job {
 	}
 	
 	protected void end(String id_task) {
+		String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 		
+		
+		File f = new File(working_dir, "end"+SEP+id_task+SEP+pid+SEP+Thread.currentThread().getId()+SEP+System.currentTimeMillis());
+		try {
+			f.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
 	}
 }

@@ -39,7 +39,7 @@ public class JobTest {
 		JobValidator jv = new JobValidator(job);
 		for(String task_id : jv.getTaskGraph()) {
 			for(String pred_id : jv.getTaskGraph().getNeighborsIn(task_id)) {
-				assertTrue( job.getTaskSequence().indexOf(task_id) > job.getTaskSequence().indexOf(pred_id));
+				assertTrue("task_id = "+task_id+" pred_id = "+pred_id, job.getMappingTaskStartStop().get(task_id).getStart() >= job.getMappingTaskStartStop().get(pred_id).getStop());
 			}
 		}
 	}

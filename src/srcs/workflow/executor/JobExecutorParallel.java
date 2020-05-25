@@ -9,6 +9,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class JobExecutorParallel extends JobExecutor{
     public JobExecutorParallel(Job job) {
@@ -18,78 +21,23 @@ public class JobExecutorParallel extends JobExecutor{
 
     @Override
     public Map<String, Object> execute() throws Exception {
-        Map<String, Object> retValues = new HashMap<>();
-        //ont isole deja les fonction sans param racine
+        Map<String, Object> retValues = new ConcurrentHashMap<>();
         Object[] args;
         Parameter[] param;
         int index ;
-        for(String funcName : jobV.getTaskGraph()) {
+        ExecutorService pool = Executors.newFixedThreadPool(jobV.getTaskGraph().size());
 
-            for (Method m : jobV.getJob().getClass().getMethods()) {
-                if(!m.isAnnotationPresent(Task.class) )
-                    continue;
-                //System.out.println(funcName+" Nom "+hasOnlyContexteParam(m.getParameters()));
-                //  if(m.isAnnotationPresent(Task.class)){ System.out.println("Param "+m.getParameterCount());
-                //    System.out.println(m.getAnnotation(Task.class).value()); }
-                if (m.getParameterCount() == 0 && m.getAnnotation(Task.class).value().equals(funcName) && hasOnlyContexteParam(m.getParameters()) && jobV.getTaskGraph().getNeighborsIn(m.getAnnotation(Task.class).value()).isEmpty()) {
-                    retValues.put(m.getAnnotation(Task.class).value(), m.invoke(jobV.getJob()));
-                } else if (m.getAnnotation(Task.class).value().equals(funcName) && hasOnlyContexteParam(m.getParameters()) && jobV.getTaskGraph().getNeighborsIn(m.getAnnotation(Task.class).value()).isEmpty()) {
-
-                    index = 0;
-                    args = new Object[m.getParameterCount()];
-                    for (Parameter p : m.getParameters()) {
-                        //  Sy  System.out.println(jobV.getTaskGraph().getNeighborsIn(m.getAnnotation(Task.class).value()).isEmpty());stem.out.println("Cont = "+p.getAnnotation(Context.class).value());
-                        args[index] = jobV.getJob().getContext().get(p.getAnnotation(Context.class).value());
-                        //System.out.println("argument cont = "+args[index]);
-                        index++;
-                    }
-                    retValues.put(funcName, m.invoke(jobV.getJob(), args));
-                }
-            }
-        }
-
-        System.out.println("Depuis le graph "+ retValues);
-        //System.out.println("Context = "+jobV.getJob().getContext());
-
-        for(String funcName : jobV.getTaskGraph()) {
-            if(retValues.containsKey(funcName))
-                continue;
-            for (Method m : jobV.getJob().getClass().getMethods()) {
-                if(!m.isAnnotationPresent(Task.class) || !m.getAnnotation(Task.class).value().equals(funcName))
-                    continue;
-
-                param = m.getParameters();
-                args = new Object[m.getParameterCount()];
-                index = 0;
-                for(Parameter p : param) {
-                    if (p.isAnnotationPresent(Context.class)) {
-                        //System.out.println("Cont = "+p.getAnnotation(Context.class).value());
-                        args[index] = jobV.getJob().getContext().get(p.getAnnotation(Context.class).value());
-                        //  System.out.println("argument cont = "+args[index]);
-                    } else {
-                        //  System.out.println("Link = "+p.getAnnotation(LinkFrom.class).value());
-                        args[index] = retValues.get(p.getAnnotation(LinkFrom.class).value());
-                        //    System.out.println("argument from = "+args[index]);
-                    }
-                    index++;
-                }
-                retValues.put(funcName,m.invoke(jobV.getJob(),args));
-            }
-        }
+        pool.shutdown();
         return retValues;
     }
 
-    private boolean hasOnlyContexteParam(Parameter[] parameters) {
-        for(Parameter p : parameters) {
-            if (p.isAnnotationPresent(LinkFrom.class)){
-                //   System.out.println("has link = "+p.getAnnotation(LinkFrom.class).value());
-                return false;
-            }
+    private class ThreadJob implements Runnable {
 
-            //   else
-            //      System.out.println("has only = "+p.getAnnotation(Context.class).value());
+        @Override
+        public void run() {
+
         }
-        return true;
     }
+
 
 }

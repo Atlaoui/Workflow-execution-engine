@@ -27,7 +27,7 @@ public class TestJobValidator {
 	@Test
 	public void test1() {
 		@SuppressWarnings("serial")
-		final Job job =new Job("job",new HashMap<String, Object>()) {
+		Job job =new Job("job",new HashMap<String, Object>()) {
 			
 		};
 		assertThrows(ValidationException.class, () ->new JobValidator(job));
