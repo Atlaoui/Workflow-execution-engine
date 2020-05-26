@@ -6,8 +6,9 @@
 \usepackage{array}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
-\usepackage{algorithm}
+\usepackage{algorithm2e}
 \usepackage[noend]{algpseudocode}
+
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -64,12 +65,32 @@ algorithme décrit de manière synthétique et non un copier/coller de votre cod
 \textbf{3. Décrire comment vous avez assuré le parallélisme des tâches indépendantes.}
 \newline
 \newline
+    Nous avons considére chaque noeud du graphe et lui avons dédier un thread , il commence par chercher la 
+    méthode qu'il doit appeler, puis pour chaqu'un de c'est argument essaye de le recupérer , si ce dernier n'existe pas encore 
+    il attend une fois que il a fini de recupérer la valeur de c'est arrgument il invoke la fonction et mets le resultat dans la map
+\newline
+\newline
 \textbf{1. Décrire votre protocole de communication}
 \newline
 \newline
 \textbf{2. Justifier votre choix de l’API de communication que vous avez utilisée.}
 \newline
-\newline
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \KwResult{Map String,Object }
+   initialization\;
+   \While{While condition}{
+    instructions\;
+    \eIf{condition}{
+     instructions1\;
+     instructions2\;
+     }{
+     instructions3\;
+    }
+   }
+   \caption{Algorithme execute}
+  \end{algorithm}
+
 \textbf{3. Quelle hypothèse doit-on faire sur le type des objets du contexte ? Justifiez.}
 \newline
 \newline
