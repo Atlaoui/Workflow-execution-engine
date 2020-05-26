@@ -6,7 +6,6 @@ import srcs.workflow.job.JobValidator;
 import srcs.workflow.job.ValidationException;
 
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class JobExecutor {
@@ -23,14 +22,19 @@ public abstract class JobExecutor {
 
     public abstract Map<String,Object> execute() throws Exception;
 
-    public Graph<String> getConcurrentGraph(){
-        try {
+    public Graph<String> aquireGraph(){
             lock.readLock().lock();
             return jobV.getTaskGraph();
-        }finally {
-            lock.readLock().unlock();
-        }
-
+    }
+    public void relaseGraph(){
+        lock.readLock().unlock();
+    }
+    public Job aquireJob(){
+            lock.readLock().lock();
+            return jobV.getJob();
+    }
+    public void relaseJob(){
+        lock.readLock().unlock();
     }
 
 }
