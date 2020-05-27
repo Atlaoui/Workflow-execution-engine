@@ -6,8 +6,10 @@
 \usepackage{array}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
-\usepackage{algorithm2e}
-\usepackage[noend]{algpseudocode}
+%\usepackage{algorithm2e}
+%\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}% http://ctan.org/pkg/algorithm
+\usepackage{algpseudocode}% http://ctan.org/pkg/algorithmicx
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -60,8 +62,29 @@
 \newline
 \textbf{2. Donner les grandes lignes de votre algorithme de la méthode execute. Il est attendu un
 algorithme décrit de manière synthétique et non un copier/coller de votre code.}
-\newline
-\newline
+
+\begin{algorithm}
+  \caption{Algorithm Exercice 3}\label{euclid}
+  \begin{algorithmic}[1]
+    \Procedure{Execute}{$a,b$}
+      \State $G\gets Graph<String>$
+      \State $C\gets Context<String , Object>$
+      \State $Mtab\gets Method[]$
+      \State $result\gets Map<String , Object>$
+      \For{\texttt{<node in Graph>}}\Comment{ont execute les method racine et stock}
+        \State \texttt{<do stuff>}\Comment{et si elle a des dépendance linkFrom on la stock dans Mtab}      
+        \If{$nodeParam$ is in $C$ or $nodeNbParam$ == 0}
+          \State $result\gets resultat$
+        \EndIf
+        \EndFor
+      \For{\texttt{<m in Mtab>}}
+        \State \texttt{<invoke m en recupérant les parametre dans G et C>}
+      \EndFor
+      \State \textbf{return} $result$
+    \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+
 \textbf{3. Décrire comment vous avez assuré le parallélisme des tâches indépendantes.}
 \newline
 \newline
@@ -75,22 +98,7 @@ algorithme décrit de manière synthétique et non un copier/coller de votre cod
 \newline
 \textbf{2. Justifier votre choix de l’API de communication que vous avez utilisée.}
 \newline
-\begin{algorithm}[H]
-  \SetAlgoLined
-  \KwResult{Map String,Object }
-   initialization\;
-   \While{While condition}{
-    instructions\;
-    \eIf{condition}{
-     instructions1\;
-     instructions2\;
-     }{
-     instructions3\;
-    }
-   }
-   \caption{Algorithme execute}
-  \end{algorithm}
-
+\newline
 \textbf{3. Quelle hypothèse doit-on faire sur le type des objets du contexte ? Justifiez.}
 \newline
 \newline
@@ -119,3 +127,20 @@ cluster ?}
 gérez-vous la réaffectation des tâches perdues ?}
 
 \end{document}
+%\begin{algorithm}
+%  \caption{Algorithm Exercice 3}\label{euclid}
+%  \begin{algorithmic}[1]
+%    \Procedure{Execute}{$a,b$}\Comment{The g.c.d. of a and b}
+%      \State $r\gets a\bmod b$
+%      \While{$r\not=0$}\Comment{We have the answer if r is 0}
+%        \State $a\gets b$
+%        \State $b\gets r$
+%        \State $r\gets a\bmod b$
+%      \EndWhile\label{euclidendwhile}
+%      \For{\texttt{<some condition>}}
+%        \State \texttt{<do stuff>}
+%      \EndFor
+%      \State \textbf{return} $b$\Comment{The gcd is b}
+%    \EndProcedure
+%  \end{algorithmic}
+%\end{algorithm}

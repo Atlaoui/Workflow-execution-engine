@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.5.8)  27 MAY 2020 00:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.5.8)  27 MAY 2020 10:13
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -157,72 +157,36 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
 \mathdisplay@stack=\toks24
 LaTeX Info: Redefining \[ on input line 2855.
 LaTeX Info: Redefining \] on input line 2856.
-) (/usr/share/texmf-dist/tex/latex/algorithm2e/algorithm2e.sty
-Package: algorithm2e 2017/07/18 v5.2 algorithms environments
-\c@AlgoLine=\count111
- (/usr/share/texmf-dist/tex/latex/base/ifthen.sty
+) (/usr/share/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating environment
+ (/usr/share/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count111
+\float@exts=\toks25
+\float@box=\box33
+\@float@everytoks=\toks26
+\@floatcapt=\box34
+) (/usr/share/texmf-dist/tex/latex/base/ifthen.sty
 Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 )
-\algocf@hangindent=\skip48
- (/usr/share/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
-Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
-\c@checkoddpage=\count112
-) (/usr/share/texmf-dist/tex/latex/tools/xspace.sty
-Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
-) (/usr/share/texmf-dist/tex/latex/relsize/relsize.sty
-Package: relsize 2013/03/29 ver 4.1
-)
-\skiptotal=\skip49
-\skiplinenumber=\skip50
-\skiprule=\skip51
-\skiphlne=\skip52
-\skiptext=\skip53
-\skiplength=\skip54
-\algomargin=\skip55
-\skipalgocfslide=\skip56
-\algowidth=\dimen128
-\inoutsize=\dimen129
-\inoutindent=\dimen130
-\interspacetitleruled=\dimen131
-\interspacealgoruled=\dimen132
-\interspacetitleboxruled=\dimen133
-\algocf@ruledwidth=\skip57
-\algocf@inoutbox=\box33
-\algocf@inputbox=\box34
-\AlCapSkip=\skip58
-\AlCapHSkip=\skip59
-\algoskipindent=\skip60
-\algocf@nlbox=\box35
-\algocf@hangingbox=\box36
-\algocf@untilbox=\box37
-\algocf@skipuntil=\skip61
-\algocf@capbox=\box38
-\algocf@lcaptionbox=\skip62
-\algoheightruledefault=\skip63
-\algoheightrule=\skip64
-\algotitleheightruledefault=\skip65
-\algotitleheightrule=\skip66
-\c@algocfline=\count113
-\c@algocfproc=\count114
-\c@algocf=\count115
-\algocf@algoframe=\box39
-\algocf@algobox=\box40
+\@float@every@algorithm=\toks27
+\c@algorithm=\count112
 ) (/usr/share/texmf-dist/tex/latex/algorithmicx/algpseudocode.sty
 Package: algpseudocode 
  (/usr/share/texmf-dist/tex/latex/algorithmicx/algorithmicx.sty
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
 
 Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
-\c@ALG@line=\count116
-\c@ALG@rem=\count117
-\c@ALG@nested=\count118
-\ALG@tlm=\skip67
-\ALG@thistlm=\skip68
-\c@ALG@Lnr=\count119
-\c@ALG@blocknr=\count120
-\c@ALG@storecount=\count121
-\c@ALG@tmpcounter=\count122
-\ALG@tmplength=\skip69
+\c@ALG@line=\count113
+\c@ALG@rem=\count114
+\c@ALG@nested=\count115
+\ALG@tlm=\skip48
+\ALG@thistlm=\skip49
+\c@ALG@Lnr=\count116
+\c@ALG@blocknr=\count117
+\c@ALG@storecount=\count118
+\c@ALG@tmpcounter=\count119
+\ALG@tmplength=\skip50
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
 ) (/usr/share/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -232,31 +196,31 @@ File: lstmisc.sty 2019/09/10 1.8c (Carsten Heinz)
 ) (/home/adrien/Workflow-execution-engine/rapport/rapport.aux)
 \openout1 = `rapport.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 35.
+LaTeX Font Info:    ... okay on input line 35.
  (/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count123
-\scratchdimen=\dimen134
-\scratchbox=\box41
-\nofMPsegments=\count124
-\nofMParguments=\count125
-\everyMPshowfont=\toks25
-\MPscratchCnt=\count126
-\MPscratchDim=\dimen135
-\MPnumerator=\count127
-\makeMPintoPDFobject=\count128
-\everyMPtoPDFconversion=\toks26
+\scratchcounter=\count120
+\scratchdimen=\dimen128
+\scratchbox=\box35
+\nofMPsegments=\count121
+\nofMParguments=\count122
+\everyMPshowfont=\toks28
+\MPscratchCnt=\count123
+\MPscratchDim=\dimen129
+\MPnumerator=\count124
+\makeMPintoPDFobject=\count125
+\everyMPtoPDFconversion=\toks29
 ) (/usr/share/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
  (/usr/share/texmf-dist/tex/generic/oberdiek/infwarerr.sty
@@ -290,7 +254,7 @@ Package grfext Info: Graphics extension search list:
  (/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-\c@lstlisting=\count129
+\c@lstlisting=\count126
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -329,84 +293,84 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 54--92
+Underfull \hbox (badness 10000) in paragraph at lines 56--65
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 54--92
+Underfull \hbox (badness 10000) in paragraph at lines 56--65
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 54--92
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 54--92
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 54--92
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 54--92
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--120
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--120
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--120
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--120
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--120
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--120
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 94--120
+Underfull \hbox (badness 10000) in paragraph at lines 88--128
 
  []
 
 [1] [2] (/home/adrien/Workflow-execution-engine/rapport/rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 5526 strings out of 492167
- 78776 string characters out of 6131559
- 350627 words of memory out of 5000000
- 9823 multiletter control sequences out of 15000+600000
- 6254 words of font info for 23 fonts, out of 8000000 for 9000
+ 4714 strings out of 492167
+ 65314 string characters out of 6131559
+ 329626 words of memory out of 5000000
+ 9016 multiletter control sequences out of 15000+600000
+ 6375 words of font info for 24 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 46i,12n,51p,367b,378s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on /home/adrien/Workflow-execution-engine/rapport/rapport.pdf (3 pages, 79948 bytes).
+ 46i,5n,51p,321b,296s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on /home/adrien/Workflow-execution-engine/rapport/rapport.pdf (3 pages, 112995 bytes).
 PDF statistics:
- 38 PDF objects out of 1000 (max. 8388607)
- 26 compressed objects within 1 object stream
+ 50 PDF objects out of 1000 (max. 8388607)
+ 35 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

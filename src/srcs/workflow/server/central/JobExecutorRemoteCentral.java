@@ -2,9 +2,12 @@ package srcs.workflow.server.central;
 
 import srcs.workflow.executor.JobExecutor;
 import srcs.workflow.job.Job;
+import srcs.workflow.server.Host;
 
 import java.io.Serializable;
 import java.rmi.Remote;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Map;
 
 public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Serializable {
@@ -13,14 +16,15 @@ public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Se
      */
     private static final long serialVersionUID = 1L;
 
-    private String serviceName="host_job";
-
     public JobExecutorRemoteCentral(Job job) {
         super(job);
     }
 
     @Override
     public Map<String, Object> execute() throws Exception {
-        return null;
+        String name = "JobRemote";
+        Registry registry = LocateRegistry.getRegistry("localhost");
+        Host s1 = (Host)registry.lookup(name);
+        return s1.executeDist(jobV.getJob());
     }
 }
