@@ -47,7 +47,7 @@ public class JobExecutorSequential extends JobExecutor{
             }
         }
 
-        System.out.println("Depuis le graph "+ retValues);
+        //System.out.println("Depuis le graph "+ retValues);
         //System.out.println("Context = "+jobV.getJob().getContext());
 
         for(String funcName : jobV.getTaskGraph()) {

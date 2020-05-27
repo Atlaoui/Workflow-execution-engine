@@ -30,7 +30,6 @@ public class JobValidator {
 
         if (obj instanceof String)
         {
-            System.out.println(obj);
             return String.class;
         }
         if(obj instanceof Double)

@@ -52,6 +52,7 @@ public class TestJobRemoteCentralFeedback  extends TestJobRemoteCentral {
 				int xavant=-1;
 				int xcourant=-1;
 				while(( line = br.readLine()) !=null) {
+					System.out.println(line);
 					xcourant=Integer.parseInt(line);	
 					assertTrue(xcourant>=xavant);
 					xavant=xcourant;

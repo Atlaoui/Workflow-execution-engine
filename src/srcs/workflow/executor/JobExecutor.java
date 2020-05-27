@@ -15,7 +15,7 @@ public abstract class JobExecutor  {
     public JobExecutor(Job job){
         try {
             jobV = new JobValidator(job);
-            System.out.println(jobV.getTaskGraph().toString());
+           //System.out.println(jobV.getTaskGraph().toString());
         } catch (ValidationException e) {
             e.printStackTrace();
         }

@@ -9,6 +9,7 @@ import java.rmi.Remote;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Serializable {
     /**
@@ -25,6 +26,9 @@ public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Se
         String name = "JobRemote";
         Registry registry = LocateRegistry.getRegistry("localhost");
         Host s1 = (Host)registry.lookup(name);
-        return s1.executeDist(jobV.getJob());
+        Map<String,Object> ret =s1.executeDist(jobV.getJob());
+       //ret.forEach((k, v) -> {System.out.println(v);});
+        System.out.println(s1.getNbTask());
+        return ret;
     }
 }
