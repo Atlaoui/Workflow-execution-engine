@@ -1,9 +1,8 @@
 package srcs.workflow.server.central;
 
-import srcs.workflow.server.Host;
-import srcs.workflow.server.HostImpl;
+import srcs.workflow.server.central.host.Host;
+import srcs.workflow.server.central.host.HostImpl;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

@@ -1,4 +1,4 @@
-package srcs.workflow.server;
+package srcs.workflow.server.central.host;
 
 
 import srcs.workflow.job.Job;

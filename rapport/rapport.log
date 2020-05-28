@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.5.8)  27 MAY 2020 10:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.5.8)  28 MAY 2020 08:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -293,81 +293,86 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 56--65
+Underfull \hbox (badness 10000) in paragraph at lines 56--67
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 56--65
+Underfull \hbox (badness 10000) in paragraph at lines 56--67
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--128
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 95--157
 
  []
 
 [1] [2] (/home/adrien/Workflow-execution-engine/rapport/rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 4714 strings out of 492167
- 65314 string characters out of 6131559
- 329626 words of memory out of 5000000
- 9016 multiletter control sequences out of 15000+600000
+ 4717 strings out of 492167
+ 65357 string characters out of 6131559
+ 331626 words of memory out of 5000000
+ 9019 multiletter control sequences out of 15000+600000
  6375 words of font info for 24 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 46i,5n,51p,321b,296s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 46i,5n,51p,335b,299s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on /home/adrien/Workflow-execution-engine/rapport/rapport.pdf (3 pages, 112995 bytes).
+Output written on /home/adrien/Workflow-execution-engine/rapport/rapport.pdf (3 pages, 115863 bytes).
 PDF statistics:
  50 PDF objects out of 1000 (max. 8388607)
  35 compressed objects within 1 object stream

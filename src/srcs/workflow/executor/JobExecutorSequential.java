@@ -7,7 +7,9 @@ import srcs.workflow.job.Task;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JobExecutorSequential extends JobExecutor{
@@ -22,24 +24,26 @@ public class JobExecutorSequential extends JobExecutor{
         Object[] args;
         Parameter[] param;
         int index ;
+        List<Method> Mlist = new ArrayList<>();
+
+        //ont cherche et invoque les tache racine
         for(String funcName : jobV.getTaskGraph()) {
-
             for (Method m : jobV.getJob().getClass().getMethods()) {
-                if(!m.isAnnotationPresent(Task.class) )
+                if(!m.isAnnotationPresent(Task.class))
                     continue;
-                //System.out.println(funcName+" Nom "+hasOnlyContexteParam(m.getParameters()));
-                //  if(m.isAnnotationPresent(Task.class)){ System.out.println("Param "+m.getParameterCount());
-                //    System.out.println(m.getAnnotation(Task.class).value()); }
-                if (m.getParameterCount() == 0 && m.getAnnotation(Task.class).value().equals(funcName) && hasOnlyContexteParam(m.getParameters()) && jobV.getTaskGraph().getNeighborsIn(m.getAnnotation(Task.class).value()).isEmpty()) {
-                    retValues.put(m.getAnnotation(Task.class).value(), m.invoke(jobV.getJob()));
-                } else if (m.getAnnotation(Task.class).value().equals(funcName) && hasOnlyContexteParam(m.getParameters()) && jobV.getTaskGraph().getNeighborsIn(m.getAnnotation(Task.class).value()).isEmpty()) {
-
+                if(!m.getAnnotation(Task.class).value().equals(funcName))
+                    continue;
+                if(!jobV.getTaskGraph().getNeighborsIn(funcName).isEmpty()){
+                    Mlist.add(m);
+                    continue;
+                }
+                if (m.getParameterCount() == 0 )
+                    retValues.put(funcName, m.invoke(jobV.getJob()));
+                else{
                     index = 0;
                     args = new Object[m.getParameterCount()];
                     for (Parameter p : m.getParameters()) {
-                        //  Sy  System.out.println(jobV.getTaskGraph().getNeighborsIn(m.getAnnotation(Task.class).value()).isEmpty());stem.out.println("Cont = "+p.getAnnotation(Context.class).value());
                         args[index] = jobV.getJob().getContext().get(p.getAnnotation(Context.class).value());
-                        //System.out.println("argument cont = "+args[index]);
                         index++;
                     }
                     retValues.put(funcName, m.invoke(jobV.getJob(), args));
@@ -47,47 +51,22 @@ public class JobExecutorSequential extends JobExecutor{
             }
         }
 
-        //System.out.println("Depuis le graph "+ retValues);
-        //System.out.println("Context = "+jobV.getJob().getContext());
-
-        for(String funcName : jobV.getTaskGraph()) {
-            if(retValues.containsKey(funcName))
-                continue;
-            for (Method m : jobV.getJob().getClass().getMethods()) {
-                if(!m.isAnnotationPresent(Task.class) || !m.getAnnotation(Task.class).value().equals(funcName))
-                    continue;
-
-                param = m.getParameters();
-                args = new Object[m.getParameterCount()];
-                index = 0;
-                for(Parameter p : param) {
-                    if (p.isAnnotationPresent(Context.class)) {
-                        //System.out.println("Cont = "+p.getAnnotation(Context.class).value());
-                        args[index] = jobV.getJob().getContext().get(p.getAnnotation(Context.class).value());
-                      //  System.out.println("argument cont = "+args[index]);
-                    } else {
-                      //  System.out.println("Link = "+p.getAnnotation(LinkFrom.class).value());
-                        args[index] = retValues.get(p.getAnnotation(LinkFrom.class).value());
-                    //    System.out.println("argument from = "+args[index]);
-                    }
-                    index++;
-                }
-                retValues.put(funcName,m.invoke(jobV.getJob(),args));
+    //ont prend le reste dé méthode et on les invoque
+        for (Method m : Mlist) {
+            param = m.getParameters();
+            args = new Object[m.getParameterCount()];
+            index = 0;
+            for(Parameter p : param) {
+                if (p.isAnnotationPresent(Context.class))
+                    args[index] = jobV.getJob().getContext().get(p.getAnnotation(Context.class).value());
+                else
+                    args[index] = retValues.get(p.getAnnotation(LinkFrom.class).value());
+                index++;
             }
+            retValues.put(m.getAnnotation(Task.class).value(),m.invoke(jobV.getJob(),args));
         }
-            return retValues;
+
+        return retValues;
     }
 
-    private boolean hasOnlyContexteParam(Parameter[] parameters) {
-        for(Parameter p : parameters) {
-            if (p.isAnnotationPresent(LinkFrom.class)){
-             //   System.out.println("has link = "+p.getAnnotation(LinkFrom.class).value());
-                return false;
-            }
-
-         //   else
-          //      System.out.println("has only = "+p.getAnnotation(Context.class).value());
-        }
-        return true;
-    }
 }

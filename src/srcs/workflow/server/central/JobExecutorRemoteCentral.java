@@ -2,14 +2,13 @@ package srcs.workflow.server.central;
 
 import srcs.workflow.executor.JobExecutor;
 import srcs.workflow.job.Job;
-import srcs.workflow.server.Host;
+import srcs.workflow.server.central.host.Host;
 
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Serializable {
     /**
