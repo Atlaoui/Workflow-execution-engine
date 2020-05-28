@@ -20,9 +20,8 @@ public class JobExecutorSequential extends JobExecutor{
     @Override
     public Map<String, Object> execute() throws Exception {
         Map<String, Object> retValues = new HashMap<>();
-        //ont isole deja les fonction sans param racine
+        //
         Object[] args;
-        Parameter[] param;
         int index ;
         List<Method> Mlist = new ArrayList<>();
 
@@ -34,6 +33,7 @@ public class JobExecutorSequential extends JobExecutor{
                 if(!m.getAnnotation(Task.class).value().equals(funcName))
                     continue;
                 if(!jobV.getTaskGraph().getNeighborsIn(funcName).isEmpty()){
+                    // si elle n'est pas racine on la met dans la liste de méthode
                     Mlist.add(m);
                     continue;
                 }
@@ -51,12 +51,11 @@ public class JobExecutorSequential extends JobExecutor{
             }
         }
 
-    //ont prend le reste dé méthode et on les invoque
+        //ont prend le reste dé méthode et on les invoque
         for (Method m : Mlist) {
-            param = m.getParameters();
             args = new Object[m.getParameterCount()];
             index = 0;
-            for(Parameter p : param) {
+            for(Parameter p : m.getParameters()) {
                 if (p.isAnnotationPresent(Context.class))
                     args[index] = jobV.getJob().getContext().get(p.getAnnotation(Context.class).value());
                 else

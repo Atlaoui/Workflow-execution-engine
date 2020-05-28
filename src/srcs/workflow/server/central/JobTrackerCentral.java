@@ -13,19 +13,14 @@ public class JobTrackerCentral {
         Registry registry ;
         try {
         	 
-        	/*try {
-        		new  ProcessBuilder("killall", "-q",  "rmiregistry").start();
-				Thread.sleep(2000);
-			} catch (InterruptedException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
+        	//	new  ProcessBuilder("killall", "-q",  "rmiregistry").start();
+			//	Thread.sleep(2000);
+
             String name = "JobRemote";
             registry = LocateRegistry.createRegistry(1099);
             Host h = new HostImpl(name);
             UnicastRemoteObject.exportObject(h,0);
             registry.rebind(name,h);
-           // System.out.println("Host deployed");
 
          /*   Runtime.getRuntime().addShutdownHook(new Thread(()->{
             try {
