@@ -6,6 +6,7 @@ import srcs.workflow.server.central.host.HostImpl;
 import srcs.workflow.server.distributed.host.TaskMaster;
 import srcs.workflow.server.distributed.host.TaskMasterImplem;
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,9 +18,7 @@ public class JobTrackerMaster {
         Registry registry ;
         try {
 
-            //	new  ProcessBuilder("killall", "-q",  "rmiregistry").start();
-            //	Thread.sleep(2000);
-
+           
             String name = "TrackerMaster";
             registry = LocateRegistry.createRegistry(1099);
             TaskMaster master = new TaskMasterImplem();

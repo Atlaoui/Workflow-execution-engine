@@ -6,6 +6,7 @@ import srcs.workflow.server.distributed.host.TaskHandler;
 import srcs.workflow.server.distributed.host.TaskImplem;
 import srcs.workflow.server.distributed.host.TaskMaster;
 
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,13 +18,18 @@ public class TaskTracker {
     public static void main(String[] args){
         try {
 
-            //	new  ProcessBuilder("killall", "-q",  "rmiregistry").start();
+            	try {
+					new  ProcessBuilder("killall", "-q",  "rmiregistry").start();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             //	Thread.sleep(2000);
             Random r = new Random();
             Integer i = r.nextInt();
             String name = "Task"+i;
             Registry registry = LocateRegistry.getRegistry("localhost");
-            TaskHandler t= new TaskImplem(name,i);
+            TaskHandler t= new TaskImplem(name,10);
             UnicastRemoteObject.exportObject(t,0);
             registry.rebind(name,t);
             TaskMaster master = (TaskMaster) registry.lookup("TrackerMaster");

@@ -16,5 +16,5 @@ public interface TaskHandler extends Remote {
 
     Integer getNbTask()throws RemoteException;
 
-    void attachMaster(TaskMasterImplem t);
+    void attachMaster(TaskMasterImplem t) throws RemoteException;
 }

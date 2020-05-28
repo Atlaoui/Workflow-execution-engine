@@ -137,16 +137,31 @@ il la place a true (l'idéal c'est de gardez une trace car si deux jobe son dema
 \textbf{1. Quel est le protocole de communications entre maître-esclaves et éventuellement entre
 esclave-esclave ?}
 \newline
+1-le Maitre recois la demande a qui il rend un id
+\newline
+2- le client demande sont resultat et ce mets en attente si il existe pas encore
+\newline
+3-il cherche un un esclave qui va lui faire le travaille il demande a chaqu'un si c'est possible
+d'executer dessu
+\newline
+4-une fois trouver il lui passe l'id de la tache ainsi que la tache
+\newline
+5-une fois terminer il mets la valeur de retour sur Taskmaster et le clien qui attend sont resulat
+peut le recupérer
+\newline
 \newline
 \textbf{2. Comment le maître affecte ses tâches équitablement sur les esclaves ?}
 \newline
+a chaque demande il déplace l'index du prochain esclave qui va recevoir le job (si il a atein la born max il avance encore)
 \newline
 \textbf{3. Comment les esclaves sont assurés de respecter leur borne de tâche courante ?}
 \newline
+les esclave on pool de thread de taille fixe si le nombre de tache en cour d'execution attein la borne de cette derniére il refuse les job
 \newline
 \textbf{4. Comment gérez-vous la communication d’un résultat entre deux tâches dépendantes ? Don-
 ner les avantages et les inconvénients de votre solution.}
 \newline
+Elle communique par le biellet d'une map sur le Taskmaster qui remplis par les esclave et vider par les consomateur
 \newline
 \textbf{5. (niveau 2) Comment gérez-vous le fait d’avoir plusieurs jobs en cours d’exécution sur le
 cluster ?}
