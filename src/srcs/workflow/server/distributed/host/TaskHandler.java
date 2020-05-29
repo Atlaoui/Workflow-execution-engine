@@ -15,6 +15,8 @@ public interface TaskHandler extends Remote {
     void executeDist(Job job ,Integer id) throws RemoteException;
 
     Integer getNbTask()throws RemoteException;
+    
+    Map<String, Object> GetOneJob(Job job)throws RemoteException;
 
-    void attachMaster(TaskMasterImplem t) throws RemoteException;
+   // void attachMaster(MasterImpl t) throws RemoteException;
 }

@@ -15,9 +15,12 @@ public class JobExecutorRemoteDistributed extends JobExecutor {
 
     @Override
     public Map<String, Object> execute() throws Exception {
+    	System.out.println("Je commence le execute");
         Registry registry = LocateRegistry.getRegistry("localhost");
-        TaskMaster master = (TaskMaster) registry.lookup("TrackerMaster");
+        TaskMaster master = (TaskMaster) registry.lookup("Master");
+        System.out.println("J'ai trouver Master = "+master.toString());
         int id = master.executeTask(jobV.getJob());
-        return master.getMyResult(id);
+        System.out.println("Nb slaves "+id);
+        return master.getOneJob(jobV.getJob());
     }
 }

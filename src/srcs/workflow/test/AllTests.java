@@ -6,12 +6,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ 
-	//TestGraph.class,
-	//TestJobValidator.class,
-	//TestJobLocalSequential.class,
-	//TestJobLocalParallel.class,
-	//TestJobRemoteCentral.class,
-	//TestJobRemoteCentralFeedback.class,
+	TestGraph.class,
+	TestJobValidator.class,
+	TestJobLocalSequential.class,
+	TestJobLocalParallel.class,
+	TestJobRemoteCentral.class,
+	TestJobRemoteCentralFeedback.class,
 	TestJobRemoteDistributed.class,
 	//TestJobRemoteDistributedRafale.class,
 	//TestJobRemoteDistributedRafaleWithCrashes.class

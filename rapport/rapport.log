@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.5.8)  28 MAY 2020 23:17
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.5.8)  29 MAY 2020 12:59
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -303,64 +303,64 @@ Underfull \hbox (badness 10000) in paragraph at lines 56--67
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--172
+Underfull \hbox (badness 10000) in paragraph at lines 96--173
 
  []
 
-[1] [2] (/home/adrien/Workflow-execution-engine/rapport/rapport.aux) ) 
+[1] [2] [3] (/home/adrien/Workflow-execution-engine/rapport/rapport.aux) ) 
 Here is how much of TeX's memory you used:
- 4717 strings out of 492167
- 65357 string characters out of 6131559
+ 4719 strings out of 492167
+ 65387 string characters out of 6131559
  333626 words of memory out of 5000000
- 9019 multiletter control sequences out of 15000+600000
+ 9021 multiletter control sequences out of 15000+600000
  6375 words of font info for 24 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 46i,5n,51p,335b,299s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 46i,5n,51p,335b,301s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on /home/adrien/Workflow-execution-engine/rapport/rapport.pdf (3 pages, 117117 bytes).
+Output written on /home/adrien/Workflow-execution-engine/rapport/rapport.pdf (4 pages, 117120 bytes).
 PDF statistics:
- 50 PDF objects out of 1000 (max. 8388607)
- 35 compressed objects within 1 object stream
+ 53 PDF objects out of 1000 (max. 8388607)
+ 37 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

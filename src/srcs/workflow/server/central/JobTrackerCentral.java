@@ -7,12 +7,14 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
 
 public class JobTrackerCentral {
     public static void main(String[] args){
         Registry registry ;
         try {
-        	 
+        	
+        	 System.out.println(Arrays.toString(args));
         	//	new  ProcessBuilder("killall", "-q",  "rmiregistry").start();
 			//	Thread.sleep(2000);
 

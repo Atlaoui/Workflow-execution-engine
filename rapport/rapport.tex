@@ -73,18 +73,19 @@ algorithme décrit de manière synthétique et non un copier/coller de votre cod
       \State $C\gets Context<String , Object>$
       \State $Mtab\gets Method[]$
       \State $result\gets Map<String , Object>$
-      \For{\texttt{<node in Graph>}}\Comment{ont execute les method racine et stock}
+      \For{\texttt{<node in Graph>}}\Comment{ont execute les method racine}
         \State \texttt{<Chercher la méthode qui correspond au node>}      
         \If{$nodeParam$ is in $C$ or $nodeNbParam$ == 0}
           \State $result\gets resultat$
           \ElsIf{si il y au moins une dépendance qui n'est pas dans C}
           \State $Mtab\gets methode$\Comment{la méthode de node}
-        \State Do that as well
-        \Else
-        \EndIf
+        \Else 
         \State \texttt{<invoke methode de node en recupérant les parametre dans C>}
+        \State \texttt{<ou sans parametre>}
+        \EndIf  
         \EndFor
-      \For{\texttt{<m in Mtab>}}
+        \State 
+      \For{\texttt{<m in Mtab>}} \Comment{Ont execute les méthode qui présenter des dépendance}
         \State \texttt{<invoke m en recupérant les parametre dans G et C>}
       \EndFor
       \State \textbf{return} $result$

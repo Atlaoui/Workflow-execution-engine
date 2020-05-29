@@ -1,9 +1,7 @@
 package srcs.workflow.server.distributed;
 
-import srcs.workflow.server.central.host.Host;
-import srcs.workflow.server.central.host.HostImpl;
 import srcs.workflow.server.distributed.host.TaskHandler;
-import srcs.workflow.server.distributed.host.TaskImplem;
+import srcs.workflow.server.distributed.host.SlaveImpl;
 import srcs.workflow.server.distributed.host.TaskMaster;
 
 import java.io.IOException;
@@ -12,39 +10,21 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
 import java.util.Random;
 
 public class TaskTracker {
     public static void main(String[] args){
         try {
-
-            	try {
-					new  ProcessBuilder("killall", "-q",  "rmiregistry").start();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            //	Thread.sleep(2000);
-            Random r = new Random();
-            Integer i = r.nextInt();
-            String name = "Task"+i;
+        	System.out.println("Maine créateur d'esclave");
+        	System.out.println(Arrays.toString(args));
+        	String name = args[1];
+        	int nb_max = Integer.parseInt(args[2]);
             Registry registry = LocateRegistry.getRegistry("localhost");
-            TaskHandler t= new TaskImplem(name,10);
+            TaskHandler t= new SlaveImpl(name,nb_max);
             UnicastRemoteObject.exportObject(t,0);
             registry.rebind(name,t);
-            TaskMaster master = (TaskMaster) registry.lookup("TrackerMaster");
-            master.attach(t);
-
-         /*   Runtime.getRuntime().addShutdownHook(new Thread(()->{
-            try {
-
-                //    Runtime.getRuntime().exec("killall -q rmiregistry");
-                System.out.println("Host Destroyed");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }));*/
-        } catch (RemoteException | NotBoundException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
     }

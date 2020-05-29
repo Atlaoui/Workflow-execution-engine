@@ -2,6 +2,7 @@ package srcs.workflow.server.central.host;
 
 import srcs.workflow.executor.JobExecutorParallel;
 import srcs.workflow.job.Job;
+import srcs.workflow.server.central.host.Host.Tuple;
 
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -9,16 +10,22 @@ import java.util.Map;
 public class HostImpl implements Host{
     private String name;
     private Integer nb_task;
+    private Boolean is_finished = false;
+
     public HostImpl(String name){
         this.name=name;
     }
 
     @Override
-    public Map<String, Object> executeDist(Job job) throws RemoteException {
+    public Tuple<Integer, Map<String, Object>> executeDist(Job job) throws RemoteException {
         try {
-        	 Map<String, Object> map = new JobExecutorParallel(job).execute();
+        	is_finished=false;
+        	JobExecutorParallel exec = new JobExecutorParallel(job);
+        	 Map<String, Object> map = exec.execute();
+        	 is_finished=true;
         	 nb_task=map.size();
-            return map;
+        	 System.err.println("Thread "+Thread.activeCount());
+            return new Tuple<Integer, Map<String, Object>>(exec.nbTask(),map);
         
         
         } catch (Exception e) {
@@ -27,9 +34,13 @@ public class HostImpl implements Host{
         throw new RemoteException("Nop le job a echouer");
     }
 
+
 	@Override
-	public Integer getNbTask() throws RemoteException {
-		// TODO Auto-generated method stub
-		return nb_task;
+	public Boolean is_finished() throws RemoteException {
+		if(is_finished) {
+			is_finished=false;
+			return true;
+		}
+		return is_finished;
 	}
 }

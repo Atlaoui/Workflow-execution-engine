@@ -39,7 +39,7 @@ public class TestJobRemoteDistributed extends SystemDeployer{
 			JobExecutor je = new JobExecutorRemoteDistributed(job);
 			Map<String,Object> res = je.execute();
 			jobtest.check(res);
-				
+			
 			Integer my_pid = Integer.parseInt(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
 			//on s'assure que le nombre de processus impliqués dans l'exécution est > 1
 			

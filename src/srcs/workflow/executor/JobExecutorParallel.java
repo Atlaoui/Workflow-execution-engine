@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JobExecutorParallel extends JobExecutor{
 
     private Map<String, Object> retValues = new ConcurrentHashMap<>();
-
+    private int nb_task=0;
     public JobExecutorParallel(Job job) {
         super(job);
     }
@@ -25,6 +25,7 @@ public class JobExecutorParallel extends JobExecutor{
         Thread [] tasks = new Thread[jobV.getTaskGraph().size()];
 
         for(String funcName : jobV.getTaskGraph()){
+        	nb_task++;
             tasks[index]=new Thread(new ThreadJob(funcName));
             tasks[index].start();
             index++;
@@ -47,7 +48,6 @@ public class JobExecutorParallel extends JobExecutor{
         public void run() {
             try {
                 Method m = getMethodByName(node);
-
                 Object[] args= new Object[m.getParameterCount()];
                 int index = 0;
 
@@ -67,6 +67,11 @@ public class JobExecutorParallel extends JobExecutor{
 
         }
     }
+    
+    public int nbTask() {
+    	return nb_task;
+    }
+    
 
     public synchronized Object getArg(String Name){
         Object val = null;
@@ -84,7 +89,7 @@ public class JobExecutorParallel extends JobExecutor{
     public synchronized void relaseAll(){
         notifyAll();
     }
-
+    
 
     private Method getMethodByName(String name) throws Exception {
         for (Method m : aquireJob().getClass().getMethods())
@@ -94,5 +99,7 @@ public class JobExecutorParallel extends JobExecutor{
                 return m;
         throw new Exception("Method not fund");
     }
+    
+   
 
 }

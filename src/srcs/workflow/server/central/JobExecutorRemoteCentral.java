@@ -3,6 +3,7 @@ package srcs.workflow.server.central;
 import srcs.workflow.executor.JobExecutor;
 import srcs.workflow.job.Job;
 import srcs.workflow.server.central.host.Host;
+import srcs.workflow.server.central.host.Host.Tuple;
 
 import java.io.Serializable;
 import java.rmi.Remote;
@@ -25,9 +26,9 @@ public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Se
         String name = "JobRemote";
         Registry registry = LocateRegistry.getRegistry("localhost");
         Host s1 = (Host)registry.lookup(name);
-        Map<String,Object> ret =s1.executeDist(jobV.getJob());
-       //ret.forEach((k, v) -> {System.out.println(v);});
-        System.out.println(s1.getNbTask());
-        return ret;
+        Tuple<Integer, Map<String, Object>> ret =s1.executeDist(jobV.getJob());
+	    //ret.forEach((k, v) -> {System.out.println(v);});
+        System.out.println(ret.x);
+        return ret.y;
     }
 }

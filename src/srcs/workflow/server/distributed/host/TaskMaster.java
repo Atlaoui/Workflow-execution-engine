@@ -14,4 +14,8 @@ public interface TaskMaster extends Remote {
     void putResult(Integer key, Map<String, Object> value) throws RemoteException;
 
     void attach(TaskHandler t) throws RemoteException;
+    
+    Map<String, Object> getOneJob(Job jobd) throws RemoteException;
+
+    
 }
