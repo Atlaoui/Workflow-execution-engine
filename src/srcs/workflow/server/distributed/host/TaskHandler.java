@@ -13,10 +13,7 @@ public interface TaskHandler extends Remote {
     String getName()throws RemoteException;
 
     void executeDist(Job job ,Integer id) throws RemoteException;
-
-    Integer getNbTask()throws RemoteException;
     
-    Map<String, Object> GetOneJob(Job job)throws RemoteException;
+    Map<String, Object> GetOneJobFromSlave(Integer id ,Job job)throws RemoteException;
 
-   // void attachMaster(MasterImpl t) throws RemoteException;
 }

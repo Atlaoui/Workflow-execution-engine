@@ -16,7 +16,7 @@ import java.util.Random;
 public class TaskTracker {
     public static void main(String[] args){
         try {
-        	System.out.println("Maine créateur d'esclave");
+        	System.out.println("Main créateur d'esclave");
         	System.out.println(Arrays.toString(args));
         	String name = args[1];
         	int nb_max = Integer.parseInt(args[2]);

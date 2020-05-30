@@ -1,24 +1,25 @@
 package srcs.workflow.server.distributed.host;
 
 import srcs.workflow.job.Job;
-
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 public class MasterImpl implements TaskMaster {
 
-    private Map<Integer,TaskHandler> slaves = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<Integer,Map<String, Object>> Retvalues= new ConcurrentHashMap<>();
-    private LinkedBlockingQueue<Map<String, Object>> dataQueue = new LinkedBlockingQueue<>();
-    private ReentrantLock lock = new ReentrantLock();
+    private List<Pair<String,Integer>> slaves = new ArrayList<>();
+    
+    private HashMap<Integer,Map<String, Object>> Retvalues= new HashMap<>();
+
+    private List<Pair<Integer,Job>>  awaitList = new ArrayList<>();
+    
     private Integer id = 0;
     private Integer current=0;
     
@@ -29,33 +30,64 @@ public class MasterImpl implements TaskMaster {
     }
     
     @Override
-    public Integer executeTask(Job job) throws RemoteException {
-    	System.out.println("J'execute Task");
-      // TaskHandler t = slaves.get(current);
-        return slaves.size();
+    public  Integer executeTask(Job job) throws RemoteException {
+    	TaskHandler t;
+		try {
+			t = connectToSlave(slaves.get(0).id);
+			t.GetOneJobFromSlave(0,job);
+		} catch (RemoteException | NotBoundException e) {
+			e.printStackTrace();
+			throw new RemoteException("Get one job is not OK");
+		}
+		current++;
+        return current;
     }
 
 //    private Map.Entry<Integer,TaskHandler> getTaskHandler(){}
 
     @Override
-    public  Map<String, Object> getMyResult(int key){   
-        return dataQueue.peek();
-    }
-
-    @Override
-    public void putResult(Integer key, Map<String, Object> value){
-        //Retvalues.put(key,value);
-    	dataQueue.add(value);
-    	
+    public synchronized void  putResult(Integer key, Map<String, Object> value){
+        Retvalues.put(key,value);
         System.out.println("Je put un result");
-        notifyAll();
-        current--;
     }
 
     @Override
-    public  void attach(TaskHandler t) throws RemoteException{
-        slaves.put(id++,t);
+    public  void attach(String SlaveName,Integer nbMax) throws RemoteException{
+        slaves.add(new Pair(SlaveName,nbMax));
         System.out.println("Je m'attache "+id);
+    }
+	@Override
+	public synchronized Boolean isJobReady(Integer id) throws RemoteException {
+		return Retvalues.containsKey(id);
+	}
+
+	@Override
+	public synchronized Map<String, Object> getOneJob(Job job) throws RemoteException {
+		TaskHandler t;
+		try {
+			t = connectToSlave(slaves.get(0).id);
+		//	t.GetOneJobFromSlave(id,job);
+		} catch (RemoteException | NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new RemoteException("Get one job is not OK");
+		}
+		return t.GetOneJobFromSlave(id, job);
+	} 
+	
+
+	private TaskHandler connectToSlave(String name) throws RemoteException, NotBoundException{
+		System.out.println("Master : je me connecte a l'esclave de nom "+name);
+		Registry registry = LocateRegistry.getRegistry("localhost");
+		TaskHandler slave =  (TaskHandler) registry.lookup(name);
+		return slave;
+	}
+	
+	private class Pair<T, V> implements Serializable{ 
+		private static final long serialVersionUID = 1L;
+		public final T id;
+    	public  V value; 
+        public Pair(T name, V nb) { this.id = name; this.value = nb;} 
     }
     @Override
 	public String toString() {
@@ -63,8 +95,10 @@ public class MasterImpl implements TaskMaster {
 	}
 
 	@Override
-	public Map<String, Object> getOneJob(Job jobd) throws RemoteException {
+	public Map<String, Object> getJob(Integer id) throws RemoteException {
 		// TODO Auto-generated method stub
-		return slaves.get(0).GetOneJob(jobd);
+		return null;
 	}
+    
+
 }

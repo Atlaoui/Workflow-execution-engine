@@ -2,7 +2,9 @@ package srcs.workflow.server.distributed.host;
 
 import srcs.workflow.executor.JobExecutorParallel;
 import srcs.workflow.job.Job;
+import srcs.workflow.server.distributed.JobExecutorRemoteDistributed;
 
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -11,22 +13,25 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SlaveImpl implements TaskHandler {
-	private MasterImpl master;
+public class SlaveImpl implements TaskHandler{
+
+	private TaskMaster master;
 	private final int nb_max;
 	private final String name;
 	private ExecutorService pool;
-	private JobExecutorParallel job_exec ;
+	
+	
+	
 	public SlaveImpl(String name, Integer nb_max){
-
+		System.out.println("Slave Ok");
 		this.name=name;
 		this.nb_max=nb_max;
 		pool = Executors.newFixedThreadPool(nb_max);
 		String nameMaster = "Master";
 		try {
 			Registry registry = LocateRegistry.getRegistry("localhost");
-			master= (MasterImpl) registry.lookup(nameMaster);
-			master.attach(this);
+			master= (TaskMaster) registry.lookup(nameMaster);
+			master.attach(name,nb_max);
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
 		}
@@ -34,17 +39,12 @@ public class SlaveImpl implements TaskHandler {
 
 	@Override
 	public void executeDist(Job job,Integer id) throws RemoteException {
-		job_exec = new JobExecutorParallel(job);
+	//	job_exec = new JobExecutorParallel(job);
 		try {
-			master.putResult(id,job_exec.execute());
+	//		master.putResult(id,job_exec.execute());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public Integer getNbTask() throws RemoteException {
-		return null;
 	}
 	@Override
 	public int getNb_max() {
@@ -63,12 +63,12 @@ public class SlaveImpl implements TaskHandler {
 	}
 
 	@Override
-	public Map<String, Object> GetOneJob(Job job) throws RemoteException {
-		// TODO Auto-generated method stub
+	public Map<String, Object> GetOneJobFromSlave(Integer id , Job job) throws RemoteException {
 		try {
-			return new JobExecutorParallel(job).execute();
+			 Map<String, Object> value = new JobExecutorParallel(job).execute();
+			//master.putResult(id, value);
+			 return value;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		throw new RemoteException("One job not Ok") ;
