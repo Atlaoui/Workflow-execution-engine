@@ -19,18 +19,18 @@ public class SystemDeployer {
 	int max_slot=2;
 	
 	final String path_project = System.getProperty("user.dir"); 
-	final String path_bin = path_project+"/bin";
+	final String path_bin = "/home/adrien/Workflow-execution-engine/out/production/Workflow-execution-engine";//path_project+"/bin";
 	
 	
 	
 	
 	@Before
 	public void startAll() throws IOException, InterruptedException {
-				
-		processjobtracker = startJVM(path_bin, 
+		processjobtracker = startJVM(path_bin,
 				name_class_jobtracker,
 				new String[0],
 				System.getProperty("java.io.tmpdir")+"/"+name_class_jobtracker);
+
 		
 		Thread.sleep(500);
 		

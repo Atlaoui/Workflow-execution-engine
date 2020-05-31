@@ -65,9 +65,9 @@ public class MasterImpl implements TaskMaster {
 
     @Override
     public  void attach(String SlaveName,Integer nbMax) throws RemoteException{
-    	System.out.println("Je m'attache name="+SlaveName +" mon nb max de tache = "+nbMax);
+    	System.out.println("Je m'attache name= "+SlaveName +" mon nb max de tache = "+nbMax);
     	slaves.add(new Pair(SlaveName,nbMax));
-       
+
     }
 	@Override
 	public synchronized Boolean isJobReady(Integer id) throws RemoteException {
@@ -131,7 +131,8 @@ public class MasterImpl implements TaskMaster {
 			System.out.println("Le thread a commencer de demander a et met la valeur dans la map est de "+Retvalues.size());
 			try {
 				TaskHandler t = (TaskHandler) r.lookup(slave.id);	
-				depo.put(idJob,t.GetOneJobFromSlave(idJob,job));
+				//depo.put(idJob,t.GetOneJobFromSlave(idJob,job));
+				t.executeDist(job,idJob);
 			} catch (RemoteException  e) {
 				e.printStackTrace();
 				System.err.println("Le thrad a eu des soucis Romote");

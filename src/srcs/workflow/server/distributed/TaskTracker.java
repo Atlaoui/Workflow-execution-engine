@@ -14,7 +14,7 @@ public class TaskTracker {
         try {
         	System.out.println("Main créateur d'esclave");
         	System.out.println(Arrays.toString(args));
-        	String name = args[0];
+        	String name =args[0];
         	int nb_max = Integer.parseInt(args[1]);
             Registry registry = LocateRegistry.getRegistry("localhost");
             TaskHandler t= new SlaveImpl(name,nb_max);

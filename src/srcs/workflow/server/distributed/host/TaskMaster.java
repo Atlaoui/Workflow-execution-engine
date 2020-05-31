@@ -10,7 +10,7 @@ public interface TaskMaster extends Remote{
 	// prend le job renvois un id 
     Integer executeTask(Job job)throws RemoteException;
     // pour que le clien check si son job est Ok
-    Boolean isJobReady(Integer id)throws RemoteException;
+        Boolean isJobReady(Integer id)throws RemoteException;
     //pour que l'esclave puisse metre le resultat d'un job
     void putResult(Integer key, Map<String, Object> value) throws RemoteException;
     
