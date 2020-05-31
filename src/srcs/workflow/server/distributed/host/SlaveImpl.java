@@ -2,9 +2,7 @@ package srcs.workflow.server.distributed.host;
 
 import srcs.workflow.executor.JobExecutorParallel;
 import srcs.workflow.job.Job;
-import srcs.workflow.server.distributed.JobExecutorRemoteDistributed;
 
-import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -23,7 +21,7 @@ public class SlaveImpl implements TaskHandler{
 	
 	
 	public SlaveImpl(String name, Integer nb_max){
-		System.out.println("Slave Ok");
+		System.out.println("Slave Constructeur");
 		this.name=name;
 		this.nb_max=nb_max;
 		pool = Executors.newFixedThreadPool(nb_max);
@@ -34,7 +32,10 @@ public class SlaveImpl implements TaskHandler{
 			master.attach(name,nb_max);
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
+			System.err.println("Nop Slave ce c'est pas attacher  !!!");
 		}
+		System.out.println("Slave Constructeur OK");
+		
 	}
 
 	@Override
@@ -65,6 +66,7 @@ public class SlaveImpl implements TaskHandler{
 	@Override
 	public Map<String, Object> GetOneJobFromSlave(Integer id , Job job) throws RemoteException {
 		try {
+			System.out.println("Get One job from the Slave "+this.toString());
 			 Map<String, Object> value = new JobExecutorParallel(job).execute();
 			//master.putResult(id, value);
 			 return value;
