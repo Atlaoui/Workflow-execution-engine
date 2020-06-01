@@ -1,18 +1,26 @@
 package srcs.workflow.server.distributed.host;
 
 import srcs.workflow.executor.JobExecutorParallel;
+import srcs.workflow.job.Context;
 import srcs.workflow.job.Job;
+import srcs.workflow.job.LinkFrom;
+import srcs.workflow.job.Task;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlaveImpl implements TaskHandler{
 
 	private TaskMaster master;
 	private final int nb_max;
+	private AtomicInteger nb_task_cur ;
 	private final String name;
 	
 	
@@ -21,6 +29,7 @@ public class SlaveImpl implements TaskHandler{
 		System.out.println("Slave Constructeur");
 		this.name=name;
 		this.nb_max=nb_max;
+		nb_task_cur = new AtomicInteger(nb_max);
 		String nameMaster = "Master";
 		try {
 			Registry registry = LocateRegistry.getRegistry("localhost");
@@ -35,23 +44,72 @@ public class SlaveImpl implements TaskHandler{
 	}
 
 	@Override
-	public void executeDist(Job job,Integer id) throws RemoteException {
+	public void executeDist(long idJob, List<String> nodes , Job job) throws RemoteException{
 		try {
-			new Thread (()->{
-				try {
-					master.putResult(id,new JobExecutorParallel(job).execute());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			System.out.println("Execut dist a était appeler");
+			for(String node : nodes)
+				new Thread (()->{
+					new JobRunnerSlave(idJob,node,job);
 			}).start();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	private class JobRunnerSlave implements Runnable{
+		private String n;
+		private Job j;
+		private long id;
+		private JobRunnerSlave(long idJob,String n, Job job){
+			System.out.println("Job runner Slave");
+			this.j=job;this.n=n;id=idJob;
+			nb_task_cur.getAndDecrement();
+
+		}
+		@Override
+		public void run() {
+			try {
+				System.err.println("le thread de l'esclave commence sont job");
+				Method m = getMethodByName(n);
+				assert m != null;
+				int index = 0;
+				Map<String,Object> link_from = null;
+				Object[] args= new Object[m.getParameterCount()];
+				for(Parameter p : m.getParameters()){
+					if(p.isAnnotationPresent(Context.class)){
+						System.out.println("contexte Slave");
+						args[index]=j.getContext().get(p.getAnnotation(Context.class).value());//a thread safer
+					}else if(p.isAnnotationPresent(LinkFrom.class)){
+						System.out.println("Linfrom Slave");
+						String func_name = p.getAnnotation(LinkFrom.class).value();
+						while(link_from==null){
+							Thread.sleep(400);
+							link_from=master.getResult(id,func_name);
+						}
+						args[index]=link_from.get(func_name);
+						System.out.println("Fin de ling from");
+					}
+					index++;
+				}
+				master.putResult(id,n,m.invoke(j,args));
+				nb_task_cur.getAndIncrement();
+				System.out.println("le thread de l'esclave termine sont job");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		private Method getMethodByName(String name){
+			for (Method m : j.getClass().getMethods())
+				if(m.isAnnotationPresent(Task.class) && m.getAnnotation(Task.class).value().equals(name))
+					return m;
+			return null;
+		}
+	}
+
 	@Override
-	public int getNb_max() {
-		return nb_max;
+	public int getNbCurTasks() {
+		return nb_task_cur.get();
 	}
 	
 
@@ -60,18 +118,6 @@ public class SlaveImpl implements TaskHandler{
 		return name;
 	}
 
-
-	@Override
-	public Map<String, Object> GetOneJobFromSlave(Integer id , Job job) throws RemoteException {
-		try {
-			System.out.println("Get One job from the Slave "+this.toString());
-			//master.putResult(id, value);
-			 return new JobExecutorParallel(job).execute();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		throw new RemoteException("One job not Ok") ;
-	}
 
 
 }

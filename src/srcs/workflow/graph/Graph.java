@@ -28,5 +28,9 @@ public interface Graph<T> extends Iterable<T> , Serializable {
 
     Set<T> accessible(T from) throws IllegalArgumentException;
 
+    // je me suis permis d'étandre l'interface
+    // pour ne pas bricoler la récuperation de touts les noeud
+    Set<T> getAllNodes ();
+
     boolean isDAG();
 }

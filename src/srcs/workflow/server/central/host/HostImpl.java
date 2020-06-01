@@ -2,8 +2,8 @@ package srcs.workflow.server.central.host;
 
 import srcs.workflow.executor.JobExecutorParallel;
 import srcs.workflow.job.*;
-import srcs.workflow.server.central.host.Host.Tuple;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.rmi.RemoteException;
@@ -112,5 +112,12 @@ public class HostImpl implements Host{
                     return m;
             throw new Exception("Method not fund");
         }
+    }
+    //a factoriser aussi
+    private class Tuple<X, Y> implements Serializable {
+        private static final long serialVersionUID = 1L;
+        public  X x;
+        public  Y y;
+        public Tuple(X x, Y y) { this.x = x; this.y = y;}
     }
 }

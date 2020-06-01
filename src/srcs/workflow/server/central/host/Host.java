@@ -24,11 +24,6 @@ public interface Host extends Remote {
 
     Map<String, Object> getMyResult(long id_job) throws RemoteException;
 
-     class Tuple<X, Y> implements Serializable{
-		private static final long serialVersionUID = 1L;
-		public  X x;
-    	public  Y y;
-        public Tuple(X x, Y y) { this.x = x; this.y = y;} 
-    } 
+
 
 }

@@ -88,6 +88,7 @@ public class GraphImpl<T> implements Graph<T> {
         return visited;
     }
 
+
     @Override
     public boolean isDAG() {
         Iterator<T> iter = map.keySet().iterator();
@@ -110,7 +111,10 @@ public class GraphImpl<T> implements Graph<T> {
         return map.size();
     }
 
-
+    @Override
+    public Set<T> getAllNodes() {
+        return map.keySet();
+    }
 
     @Override
     public Iterator<T> iterator() {

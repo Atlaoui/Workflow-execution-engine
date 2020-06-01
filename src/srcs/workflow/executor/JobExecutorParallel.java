@@ -69,7 +69,7 @@ public class JobExecutorParallel extends JobExecutor{
 
 
     public synchronized Object getArg(String Name){
-        Object val;
+        Object val ;
         while(!retValues.containsKey(Name)){
             try {
                 wait();

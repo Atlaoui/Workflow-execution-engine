@@ -82,7 +82,6 @@ public class JobValidator implements Serializable {
 
         for(Map.Entry<String, Object> entry : job.getContext().entrySet())
             cont.put(entry.getKey(),getObjectClass(entry.getValue()));
-       // System.out.println(tasks_Id);
         for (Method m : job.getClass().getMethods()) {//voir si c pas mieux le declared
             if (m.isAnnotationPresent(Task.class)) {
                 Annotation[][] ano = m.getParameterAnnotations();
@@ -101,11 +100,6 @@ public class JobValidator implements Serializable {
                                     throw new ValidationException();
                                 //- il doit y avoir une compatibilité de type entre un paramètre annoté Context et l’objet
                                 if (!type_params[pos_arg].isAssignableFrom(cont.get(value_arg))) {
-                                    // if(!job.getContext().get(value_arg).getClass().equals(type_params[pos_arg]))
-                                  /*  System.out.println(type_params[pos_arg].isAssignableFrom(cont.get(value_arg)));
-                                    System.out.println(int.class.isAssignableFrom(Integer.class));
-                                    System.out.println("Typ pos = "+type_params[pos_arg]);
-                                    System.out.println("cont type = "+ cont.get(value_arg));*/
                                     throw new ValidationException();
                                 }
                             } else if (a instanceof LinkFrom) {
@@ -114,12 +108,6 @@ public class JobValidator implements Serializable {
                                 if (!tasks_Id.containsKey(value_arg))
                                     throw new ValidationException();
                                 if (!type_params[pos_arg].isAssignableFrom(tasks_Id.get(value_arg))) {
-
-                                   /* System.out.println("Params = "+Arrays.toString(type_params));
-                                    System.out.println("pos = "+pos_arg);
-                                    System.out.println("Value " + value_arg);
-                                    System.out.println("Typ pos = "+type_params[pos_arg]);
-                                    System.out.println("tasks type = "+ tasks_Id.get(value_arg));*/
                                     throw new ValidationException();
                                 }
                                 if(!taskGraph.existEdge(value_arg,value))
@@ -137,7 +125,6 @@ public class JobValidator implements Serializable {
 
         if(!taskGraph.isDAG())
             throw new ValidationException();
-       //System.out.println("le mien ="+taskGraph);
     }
 
 

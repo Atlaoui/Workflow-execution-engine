@@ -3,7 +3,6 @@ package srcs.workflow.server.central;
 import srcs.workflow.executor.JobExecutor;
 import srcs.workflow.job.Job;
 import srcs.workflow.server.central.host.Host;
-import srcs.workflow.server.central.host.Host.Tuple;
 
 import java.io.Serializable;
 import java.rmi.Remote;

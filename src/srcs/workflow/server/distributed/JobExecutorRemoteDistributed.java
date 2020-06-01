@@ -21,12 +21,12 @@ public class JobExecutorRemoteDistributed extends JobExecutor{
     	Registry registry = LocateRegistry.getRegistry("localhost");
         
         TaskMaster master = (TaskMaster) registry.lookup("Master");
-        Integer id = master.executeTask(jobV.getJob());
+        long id = master.executeTask(jobV);
         System.out.println("l'id du travaille que je demande est : "+id);
         //attendre que la réponse soit positive
         try {
 			while(!master.isJobReady(id)) 
-				Thread.sleep(2000);
+				Thread.sleep(400);
 		} catch (InterruptedException | RemoteException e) {
 			e.printStackTrace();
 		}
