@@ -12,7 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestJobLocalParallel.class,
 	TestJobRemoteCentral.class,
 	TestJobRemoteCentralFeedback.class,
-	TestJobRemoteDistributed.class,
+	//TestJobRemoteDistributed.class,
 	//TestJobRemoteDistributedRafale.class,
 	//TestJobRemoteDistributedRafaleWithCrashes.class
 	})

@@ -44,7 +44,7 @@ public class TestJobRemoteDistributed extends SystemDeployer{
 			//on s'assure que le nombre de processus impliqués dans l'exécution est > 1
 			
 			
-			//assertNotEquals(1,job.getMappingTaskPid().values().stream().distinct().count());
+			assertNotEquals(1,job.getMappingTaskPid().values().stream().distinct().count());
 			//on s'assure que processus qui ont exécuté les taches sont bien les tasktrackers
 			assertNotEquals(my_pid,job.getMappingTaskPid().get("A"));
 			

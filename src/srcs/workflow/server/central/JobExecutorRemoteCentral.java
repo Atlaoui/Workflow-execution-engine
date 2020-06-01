@@ -26,9 +26,12 @@ public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Se
         String name = "JobRemote";
         Registry registry = LocateRegistry.getRegistry("localhost");
         Host s1 = (Host)registry.lookup(name);
-        Tuple<Integer, Map<String, Object>> ret =s1.executeDist(jobV.getJob());
-	    //ret.forEach((k, v) -> {System.out.println(v);});
-        System.out.println(ret.x);
-        return ret.y;
+       long id =s1.executeDist(jobV);
+       while (jobV.getTaskGraph().size()!= s1.is_finished(id)) {
+           Thread.sleep(100);
+       }
+       System.out.println(s1.is_finished(id));
+
+	    return  s1.getMyResult(id);
     }
 }

@@ -1,9 +1,10 @@
 package srcs.workflow.graph;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-public interface Graph<T> extends Iterable<T> {
+public interface Graph<T> extends Iterable<T> , Serializable {
 
     void addNode(T n) throws IllegalArgumentException;
 

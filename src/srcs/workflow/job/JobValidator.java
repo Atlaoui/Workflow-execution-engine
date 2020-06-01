@@ -3,13 +3,14 @@ package srcs.workflow.job;
 import srcs.workflow.graph.Graph;
 import srcs.workflow.graph.GraphImpl;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class JobValidator {
+public class JobValidator implements Serializable {
     private Job job ;
     private Graph<String> taskGraph;
     public JobValidator(Job job) throws ValidationException{

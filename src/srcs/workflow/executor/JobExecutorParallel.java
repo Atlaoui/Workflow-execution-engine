@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JobExecutorParallel extends JobExecutor{
 
     private Map<String, Object> retValues = new ConcurrentHashMap<>();
-    private int nb_task=0;
     public JobExecutorParallel(Job job) {
         super(job);
     }
@@ -25,7 +24,6 @@ public class JobExecutorParallel extends JobExecutor{
         Thread [] tasks = new Thread[jobV.getTaskGraph().size()];
 
         for(String funcName : jobV.getTaskGraph()){
-        	nb_task++;
             tasks[index]=new Thread(new ThreadJob(funcName));
             tasks[index].start();
             index++;
@@ -37,7 +35,7 @@ public class JobExecutorParallel extends JobExecutor{
         return retValues;
     }
 
-
+    //a factoriser avec JobExecParallele
     private class ThreadJob implements Runnable {
         private String node;
         private ThreadJob(String node){
@@ -64,17 +62,14 @@ public class JobExecutorParallel extends JobExecutor{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
-    
-    public int nbTask() {
-    	return nb_task;
-    }
-    
+
+
+
 
     public synchronized Object getArg(String Name){
-        Object val = null;
+        Object val;
         while(!retValues.containsKey(Name)){
             try {
                 wait();
@@ -93,9 +88,7 @@ public class JobExecutorParallel extends JobExecutor{
 
     private Method getMethodByName(String name) throws Exception {
         for (Method m : aquireJob().getClass().getMethods())
-            if(!m.isAnnotationPresent(Task.class))
-                continue;
-            else if(m.getAnnotation(Task.class).value().equals(name))
+            if(m.isAnnotationPresent(Task.class) && m.getAnnotation(Task.class).value().equals(name))
                 return m;
         throw new Exception("Method not fund");
     }

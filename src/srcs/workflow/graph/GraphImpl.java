@@ -1,8 +1,13 @@
 package srcs.workflow.graph;
 
+import java.io.Serializable;
 import java.util.*;
 
 public class GraphImpl<T> implements Graph<T> {
+    /**
+     * Version
+     */
+    private static final long serialVersionUID = 1L;
 
     private Map<T, Tuple> map = new HashMap<>();
 
@@ -112,7 +117,11 @@ public class GraphImpl<T> implements Graph<T> {
         return map.keySet().iterator();
     }
 
-    private class Tuple{
+    private class Tuple implements Serializable {
+        /**
+         * Version
+         */
+        private static final long serialVersionUID = 1L;
         /**arc entrant*/
         private List<T> vertex_in=new LinkedList<T>();
         /**arc sortant*/
