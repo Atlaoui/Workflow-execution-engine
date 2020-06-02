@@ -4,8 +4,6 @@ import srcs.workflow.job.Job;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
-import java.util.Map;
 
 
 public interface TaskHandler extends Remote {
@@ -14,5 +12,7 @@ public interface TaskHandler extends Remote {
 
     String getName()throws RemoteException;
 
-    void executeDist(long idJob, List<String> nodes ,Job job) throws RemoteException;
+    void executeDist(long idJob, String node ,Job job) throws RemoteException;
+
+    void cancelJob(long idJob) throws RemoteException;
 }

@@ -16,7 +16,7 @@ public interface TaskMaster extends Remote{
     void putResult(long key, String name, Object value) throws RemoteException;
 
     //pour que les slave puisse recupérer leur resultat
-    Map<String, Object> getResult(long key, String nom) throws RemoteException;
+    Map<String, Object> getResult(long key, String nom) throws RemoteException, InterruptedException;
 
     //fonction d'attache d'esclave vers le maitre
     void attach(String SlaveName,Integer nbMax) throws RemoteException;
