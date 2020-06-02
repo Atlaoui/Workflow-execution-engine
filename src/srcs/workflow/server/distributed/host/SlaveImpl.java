@@ -82,11 +82,9 @@ public class SlaveImpl implements TaskHandler{
 					}else if(p.isAnnotationPresent(LinkFrom.class)){
 						System.out.println("Linfrom Slave");
 						String func_name = p.getAnnotation(LinkFrom.class).value();
-						while(link_from==null){
-							Thread.sleep(400);
+						if(link_from == null || !link_from.containsKey(func_name))
 							link_from=master.getResult(id,func_name);
-							System.out.println("LinkFrom "+link_from);
-						}
+						System.out.println("LinkFrom "+link_from);
 						args[index]=link_from.get(func_name);
 						System.out.println("Fin de ling from");
 					}

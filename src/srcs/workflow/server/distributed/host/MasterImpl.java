@@ -70,7 +70,7 @@ public class MasterImpl implements TaskMaster {
 			lock.lock();
 			Retvalues.get(key).id--;
 			Retvalues.get(key).value.put(name,value);
-		///	condition.signalAll();
+			condition.signalAll();
 		}finally {
 			lock.unlock();
 		}
@@ -82,8 +82,8 @@ public class MasterImpl implements TaskMaster {
 		try {
 			System.out.println("Je get result");
 			lock.lock();
-			//while (!Retvalues.get(key).value.containsKey(nom))
-			//	condition.await();
+			while (!Retvalues.get(key).value.containsKey(nom))
+				condition.await();
 			return Retvalues.get(key).value;
 		} catch (Exception e) {
 			e.printStackTrace();
