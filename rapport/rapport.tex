@@ -138,12 +138,11 @@ il la place a true (l'idéal c'est de gardez une trace car si deux jobe son dema
 \textbf{1. Quel est le protocole de communications entre maître-esclaves et éventuellement entre
 esclave-esclave ?}
 \newline
-1-le Maitre recois la demande a qui il rend un id
+1-le Maitre recois la demande a qui il affect  un id
 \newline
 2- le client demande sont resultat et ce mets en attente si il existe pas encore
 \newline
-3-il cherche un un esclave qui va lui faire le travaille il demande a chaqu'un si c'est possible
-d'executer dessu
+3-il lance un thread qui va  chercher des  esclave a qui il va demander le travail , il demande a chaqu'un si il a des slot disponible
 \newline
 4-une fois trouver il lui passe l'id de la tache ainsi que la tache
 \newline
