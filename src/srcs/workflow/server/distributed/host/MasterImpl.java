@@ -1,6 +1,6 @@
 package srcs.workflow.server.distributed.host;
 
-import srcs.workflow.job.Job;
+
 import srcs.workflow.job.JobValidator;
 
 import java.io.Serializable;
@@ -140,7 +140,7 @@ public class MasterImpl implements TaskMaster {
 				TaskHandler t;
 				int i = 0;
 				List<String> args;
-				while(tasks.isEmpty() ){
+				while(!tasks.isEmpty() ){
 					t = connectToSlave();
 					System.out.println(i +"  "+tasks.size());
 					if(t==null)
@@ -154,11 +154,10 @@ public class MasterImpl implements TaskMaster {
 						t.executeDist(idJob, args,job.getJob());
 					}
 				}
-
 			} catch (RemoteException  e) {
 				e.printStackTrace();
 			}
-			System.out.println("Le thread a fini de demander a et met la valeur dans la map est de "+Retvalues.size());
+			System.out.println("Le thread a fini de demander a et met la valeur dans la map est de taille "+Retvalues.size());
 		}
 
 
@@ -168,7 +167,7 @@ public class MasterImpl implements TaskMaster {
 			boolean isfound=false;
 			TaskHandler slave = null;
 			while(!isfound){
-				Pair<String,Integer> s = slaves.get((indexSlave+1)%slaves.size());
+				Pair<String,Integer> s = slaves.get((indexSlave++)%slaves.size());
 				try {
 					slave = (TaskHandler) reg.lookup(s.id);
 				}catch(NotBoundException e){

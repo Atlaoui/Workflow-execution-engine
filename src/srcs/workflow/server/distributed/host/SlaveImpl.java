@@ -45,12 +45,12 @@ public class SlaveImpl implements TaskHandler{
 
 	@Override
 	public void executeDist(long idJob, List<String> nodes , Job job) throws RemoteException{
+		System.out.println("Execut dist a était appeler");
 		try {
-			System.out.println("Execut dist a était appeler");
 			for(String node : nodes)
-				new Thread (()->{
-					new JobRunnerSlave(idJob,node,job);
-			}).start();
+				new Thread (
+					new JobRunnerSlave(idJob,node,job)
+				).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -69,7 +69,7 @@ public class SlaveImpl implements TaskHandler{
 		@Override
 		public void run() {
 			try {
-				System.err.println("le thread de l'esclave commence sont job");
+				System.out.println("le thread de l'esclave commence sont job");
 				Method m = getMethodByName(n);
 				assert m != null;
 				int index = 0;
@@ -85,6 +85,7 @@ public class SlaveImpl implements TaskHandler{
 						while(link_from==null){
 							Thread.sleep(400);
 							link_from=master.getResult(id,func_name);
+							System.out.println("LinkFrom "+link_from);
 						}
 						args[index]=link_from.get(func_name);
 						System.out.println("Fin de ling from");

@@ -18,7 +18,6 @@ public class JobTrackerCentral {
             Host h = new HostImpl(name);
             UnicastRemoteObject.exportObject(h,0);
             registry.rebind(name,h);
-
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -36,4 +35,4 @@ public class JobTrackerCentral {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }));*/
+                }));*/
