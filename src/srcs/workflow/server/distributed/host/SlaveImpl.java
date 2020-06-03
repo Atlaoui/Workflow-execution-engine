@@ -26,7 +26,8 @@ public class SlaveImpl implements TaskHandler{
 	private AtomicInteger nb_task_cur ;
 	private final String name;
 	private ExecutorService pool ;
-	private List<Pair<Long,Future<?>>> toCancel = new ArrayList<>();
+	//id job jod thread a fin de les interupt en cas de panne
+	private List<Tuple<Long,Future<?>>> toCancel = new ArrayList<>();
 
 	
 	
@@ -49,7 +50,7 @@ public class SlaveImpl implements TaskHandler{
 	@Override
 	public void executeDist(long idJob, String node , Job job) throws RemoteException{
 		try {
-			pool.submit(new JobRunnerSlave(idJob,node,job));
+			toCancel.add(new Tuple<>(idJob,pool.submit(new JobRunnerSlave(idJob,node,job))));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,6 +58,14 @@ public class SlaveImpl implements TaskHandler{
 
 	@Override
 	public void cancelJob(long idJob) throws RemoteException {
+		System.out.println("Cancel");
+		for(Tuple<Long,Future<?>> t : toCancel){
+			if(t.id==idJob && !t.value.isDone() && !t.value.isCancelled())
+				t.value.cancel(true);
+			nb_task_cur.getAndIncrement();
+			if(t.value.isCancelled())
+				System.out.println("YOUHOUUUUUUUUUUUUUUUUU");
+		}
 	}
 
 	private class JobRunnerSlave implements Runnable{
@@ -93,6 +102,7 @@ public class SlaveImpl implements TaskHandler{
 
 			}catch (InterruptedException | IllegalAccessException | InvocationTargetException | RemoteException e) {
 				e.printStackTrace();
+				Thread.currentThread().interrupt();
 			}finally {
 				nb_task_cur.getAndIncrement();
 			}
@@ -122,9 +132,9 @@ public class SlaveImpl implements TaskHandler{
 	 * @param <T> l id supposer unique
 	 * @param <V> la valeur associer
 	 */
-	private static class Pair<T, V>{
+	private static class Tuple<T, V>{
 		private  T id;
 		private   V value;
-		public Pair(T name, V nb) { this.id = name; this.value = nb;}
+		public Tuple(T name, V nb ) { this.id = name; this.value = nb;}
 	}
 }

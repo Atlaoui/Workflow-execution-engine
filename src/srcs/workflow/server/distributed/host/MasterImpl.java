@@ -1,6 +1,7 @@
 package srcs.workflow.server.distributed.host;
 
 
+import srcs.workflow.job.Job;
 import srcs.workflow.job.JobValidator;
 
 import java.io.Serializable;
@@ -21,14 +22,20 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class MasterImpl implements TaskMaster {
 
+	/***************************Pannes************************************/
+	private Thread demon;
+	private List<Pair<Long, Job>> notFinished = new ArrayList<>();
+
+	/*********************************************************************/
+
 	/*********************Con avec les esclave ***************************/
 	private CopyOnWriteArrayList<Pair<String,Integer>> slaves = new CopyOnWriteArrayList<>();
-    
-    private ConcurrentHashMap<Long,Pair<Integer,Map<String, Object>>> Retvalues= new ConcurrentHashMap<>();
+
+	private ConcurrentHashMap<Long,Pair<Integer,Map<String, Object>>> Retvalues= new ConcurrentHashMap<>();
 
 	/***********************Gestion des acces au map **********************************/
 
-	private ReentrantLock lock = new ReentrantLock();
+	private ReentrantLock lock = new ReentrantLock(true);
 	private Condition condition = lock.newCondition();
 
 	private ExecutorService pool = Executors.newCachedThreadPool();
@@ -55,7 +62,7 @@ public class MasterImpl implements TaskMaster {
 			Retvalues.put(id,new Pair<>(job.getTaskGraph().size(),new HashMap<>()));
 			int pos = POS_CUR.get();
 			POS_CUR.set((pos+1)%slaves.size());
-			pool.execute(new JobRunner(job,id,pos));
+			pool.execute(new JobRunner(job,id,pos,slaves,this));
 
         return id;
     }
@@ -110,7 +117,24 @@ public class MasterImpl implements TaskMaster {
 	/**
 	 * ce charge de run un job pour le Master
 	 */
-	private class JobRunner implements Runnable {
+
+	ConcurrentHashMap<Long, Pair<Integer, Map<String, Object>>> getRetvalues() {
+		return Retvalues;
+	}
+
+	/**
+	 * Class pour pour faciliter la géstion d'esclave
+	 * @param <T> l id supposer unique
+	 * @param <V> la valeur associer
+	 */
+	 static class Pair<T, V> implements Serializable{
+		private static final long serialVersionUID = 1L;
+		public  T id;
+		public  V value;
+		public Pair(T name, V nb) { this.id = name; this.value = nb;}
+	}
+}
+/*	private class JobRunner implements Runnable {
 		private JobValidator job;
 		private long idJob;
 		private int indexSlave;
@@ -137,9 +161,10 @@ public class MasterImpl implements TaskMaster {
 				String nodeCur;
 				//1er boucle on envois a tlm
 				boolean is_error=false;
-				while(!tasks.isEmpty() ) {
+				while(!tasks.isEmpty()) {
+					if(is_error)
+						break;
 					nodeCur=tasks.element();
-					is_error=false;
 					try {
 						t = connectToSlave();
 						if (t == null)
@@ -156,13 +181,12 @@ public class MasterImpl implements TaskMaster {
 						tasks.remove(nodeCur);
 				}
 				//verification que toutes les tache sont terminer
-				Thread.sleep(500);
-				System.out.println("je suis la");
 
-				if(Retvalues.get(idJob).id!=0){
+				if(is_error && Retvalues.get(idJob).id!=0){
 					//list des tache no terminer
 					Queue<String> toCheck = new ArrayDeque<>(job.getTaskGraph().getAllNodes());
 					 toCheck.removeAll(Retvalues.get(idJob).value.keySet());
+
 					 while (!toCheck.isEmpty()){
 					 	System.out.println("Dans check");
 					 	System.out.println(toCheck);
@@ -175,7 +199,7 @@ public class MasterImpl implements TaskMaster {
 						 }
 					 }
 				}
-			} catch (RemoteException | InterruptedException e) {
+			} catch (RemoteException  e) {
 				e.printStackTrace();
 			}
 			System.out.println("Le thread a fini de demander a et met la valeur dans la map est de taille "+Retvalues.size());
@@ -204,17 +228,4 @@ public class MasterImpl implements TaskMaster {
 		}
 
 	}
-
-	/**
-	 * Class pour pour faciliter la géstion d'esclave
-	 * @param <T> l id supposer unique
-	 * @param <V> la valeur associer
-	 */
-	private static class Pair<T, V> implements Serializable{
-		private static final long serialVersionUID = 1L;
-		public  T id;
-		public  V value;
-		public Pair(T name, V nb) { this.id = name; this.value = nb;}
-	}
-
-}
+*/

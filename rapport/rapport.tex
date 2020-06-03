@@ -49,14 +49,16 @@
 	{ \huge \bfseries Réponse au question du projet Moteur d’exécution de workflows \\[0.15cm] }
 	\HRule \\[4cm]
 	\large{Tarik Atlaoui} \\[3cm]
-	05 Mai 2020 \\[3cm]
+	03 Juin 2020 \\[3cm]
 
 \end{titlepage}
                                                                                                                          
 \textbf{1. Pourquoi ne peut-on pas utiliser le nom de la méthode en tant qu’identifiant de tâche ?}
 \newline
 \newline
-Si on utilisait le nom d'une méthode en tant qu'identifiant de tâche, l'utilisateur ne pourrait pas surcharger la méthode car deux méthodes avec le même nom mais des paramètres différent ne représenteraient qu'un seul nœud. 
+Si on utilisait le nom d'une méthode en tant qu'identifiant de tâche,
+ l'utilisateur ne pourrait pas surcharger la méthode car deux méthodes avec le même nom mais
+  des paramètres différent ne représenteraient qu'un seul nœud. 
 \newline
 \newline
 \textbf{Exercice 3}
@@ -102,21 +104,23 @@ des autres tâches qui ne peuvent pas encore être exécutées, puis parcourir l
 \newline
 \newline
 Nous avons considéré chaque nœud du graphe et lui avons dédié un thread. Il commence par chercher la 
-méthode qu'il doit appeler, puis pour chaqu'un de ses arguments essaye de le recupérer, si ce dernier n'existe pas encore, 
-il attend. Une fois qu'il a fini de recupérer la valeur de arguments, il invoque la fonction et met le resultat dans la map
+méthode qu'il doit appeler, puis pour chaqu'un de ses arguments va chercher ça valeur ou dans le context ou la map resultat, si ce dernier n'existe pas encore dans la map, 
+il attend Une fois qu'il a fini de recupérer la valeur de arguments, il invoque la fonction et met le resultat dans la map
 \newline
 \newline
 \textbf{Exercice 5}
 \newline
 \textbf{1. Décrire votre protocole de communication}
 \newline
-Le JobExecutorRemote demande demande le calcule d'un job a une jvm distante puis il peux choisir
-celle ci lui renvois un tuple contenant le nombre de tache executer ainsi que la Map String , Object  calculer
+Le JobExecutorRemote demande demande le calcule d'un job a une jvm distante puis il ce mets on attente
+que celle ci lui renvois la Map String , Object  calculer.
+une fois fait il demande sont resultat
 \newline
 \textbf{2. Justifier votre choix de l’API de communication que vous avez utilisée.}
 \newline
 Nous avons choisi Rmi car elle paraissait être la plus adaptée au problème. Nous n'aurons pas besoin de gérer une base de donnée,
 il faudra juste gérer l'execution de tâche sur une ou plusieurs Jvm, elle est aussi incluse dans java donc pas besoin d'installation préalable ce qui est un plus.
+cependant le seul default de l'api est la notification du client qui ne peux etre faite qui si ce dernier est Remote
 \newline
 \newline
 \textbf{3. Quelle hypothèse doit-on faire sur le type des objets du contexte ? Justifiez.}
@@ -128,8 +132,8 @@ transmettre d'une machine à une autre.
 \textbf{4. Quel mécanisme avez-vous utilisé pour la notification d’avancement au client ?}
 \newline
 \newline
-Dans le host qui fait le calcule il met une variable a false avants le calcule et a vrai apres des que la tache est fini
-il la place a true (l'idéal c'est de gardez une trace car si deux jobe son demander la notification peux etre pertuber)
+Sur le serveur a chaque tache demander , une nouvelle entrée dans la map est crée avec le resultat ainsi que le nombre de tache terminer par Job
+pour connaitre l'avancement de la tache le client demande au serveur qui va lui rendre le nombre de tache terminer
 \newline
 \newline
 \textbf{Exercice 6}
@@ -150,7 +154,8 @@ esclave-esclave ?}
 \newline
 \textbf{2. Comment le maître affecte ses tâches équitablement sur les esclaves ?}
 \newline
-À chaque demande, il déplace l'index du premier esclave qui va recevoir la tâche 
+À chaque demande, il déplace l'index du premier esclave qui va recevoir la tâche ainsi il effectue une rotation complete et les thread qui demande 
+les tache font de meme.
 \newline
 \textbf{3. Comment les esclaves sont assurés de respecter leur borne de tâche courante ?}
 \newline
@@ -159,7 +164,6 @@ pour chaque tâche, l'esclave lance un Thread : Au début il decrémente la vari
 \textbf{4. Comment gérez-vous la communication d’un résultat entre deux tâches dépendantes ? Don-
 ner les avantages et les inconvénients de votre solution.}
 \newline
-
 Les différentes tâches communiquent par le billet d'une map stockée sur le maitre. 
 À chaque fois qu'une tâche se termine, elle dépose sa valeur de retour sur le maître, à l'inverse, si elle a besoin d'une valeur, il va l'y récupérer. 
 \newline

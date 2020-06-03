@@ -14,7 +14,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	TestJobRemoteCentralFeedback.class,
 	TestJobRemoteDistributed.class,
 	TestJobRemoteDistributedRafale.class,
-	TestJobRemoteDistributedRafaleWithCrashes.class
+	//TestJobRemoteDistributedRafaleWithCrashes.class
 	})
 public class AllTests {
 
