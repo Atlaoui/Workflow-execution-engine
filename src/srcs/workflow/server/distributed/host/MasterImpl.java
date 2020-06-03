@@ -111,10 +111,11 @@ public class MasterImpl implements TaskMaster {
 	 * ce charge de run un job pour le Master
 	 */
 	private class JobRunner implements Runnable {
-		JobValidator job;
-		long idJob;
-		int indexSlave;
-		Registry reg;
+		private JobValidator job;
+		private long idJob;
+		private int indexSlave;
+		private Registry reg;
+		private List<String> down = new ArrayList<>();
 		public JobRunner( JobValidator job, long id_job, int pos_slave) {
 			try {
 				this.reg=LocateRegistry.getRegistry("localhost");
@@ -180,22 +181,24 @@ public class MasterImpl implements TaskMaster {
 			System.out.println("Le thread a fini de demander a et met la valeur dans la map est de taille "+Retvalues.size());
 		}
 
-		private TaskHandler connectToSlave() throws RemoteException {
+		private TaskHandler connectToSlave()  {
 			System.out.println("Petit Thread : commence connect to Slave");
 			Pair<String,Integer> p;
 			boolean isfound=false;
 			TaskHandler slave = null;
 			while(!isfound){
-				p = slaves.get((indexSlave++)%slaves.size());
+				do //on tourne tant que le node n'est pas marquer comme en panne
+					p = slaves.get((indexSlave++) % slaves.size());
+				while(down.contains(p.id));
 				try {
 					slave = (TaskHandler) reg.lookup(p.id);
-				}catch(NotBoundException | RemoteException e){
-					e.printStackTrace();
-					System.out.println("Je suis la ");
-					continue;
+					if(slave.getNbCurTasks()!=0)
+						isfound=true;
+				}catch(NotBoundException e){
+					e.printStackTrace();// a cause du décalage au début
+				}catch (RemoteException e){
+					down.add(p.id);
 				}
-				if(slave.getNbCurTasks()!=0)
-					isfound=true;
 			}
 			return slave;
 		}

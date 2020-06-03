@@ -56,8 +56,7 @@
 \textbf{1. Pourquoi ne peut-on pas utiliser le nom de la méthode en tant qu’identifiant de tâche ?}
 \newline
 \newline
-   Si on utiliser le nom d'une méthode en tant qu'identifiant de tâche l'utilisateur ne pourrais pas surcharger les méthodes.
-   Car deux méthode avec le meme nom mais des parametre différent représenterais que un seul noeud
+Si on utilisait le nom d'une méthode en tant qu'identifiant de tâche, l'utilisateur ne pourrait pas surcharger la méthode car deux méthodes avec le même nom mais des paramètres différent ne représenteraient qu'un seul nœud. 
 \newline
 \newline
 \textbf{Exercice 3}
@@ -93,8 +92,8 @@ algorithme décrit de manière synthétique et non un copier/coller de votre cod
   \end{algorithmic}
 \end{algorithm}
 
-Pour résumer l'algorithme utiliser , au debut en recuper touts les resultat des tache racine tout en gardant les méthode 
-des autre tache qui peuve pas encore etre executer ,puis ont parcour les méthode réstante et en les execute.
+Pour résumer l'algorithme utilisé, au debut en récupérer tous les résultats des tâches racine tout en gardant les méthodes 
+des autres tâches qui ne peuvent pas encore être exécutées, puis parcourir les méthodes restantes et les exécuter.
 \newline
 \newline
 \textbf{Exercice 4}
@@ -102,9 +101,9 @@ des autre tache qui peuve pas encore etre executer ,puis ont parcour les méthod
 \textbf{1. Décrire comment vous avez assuré le parallélisme des tâches indépendantes.}
 \newline
 \newline
-    Nous avons considére chaque noeud du graphe et lui avons dédier un thread , il commence par chercher la 
-    méthode qu'il doit appeler, puis pour chaqu'un de c'est argument essaye de le recupérer , si ce dernier n'existe pas encore 
-    il attend une fois que il a fini de recupérer la valeur de c'est arrgument il invoke la fonction et mets le resultat dans la map
+Nous avons considéré chaque nœud du graphe et lui avons dédié un thread. Il commence par chercher la 
+méthode qu'il doit appeler, puis pour chaqu'un de ses arguments essaye de le recupérer, si ce dernier n'existe pas encore, 
+il attend. Une fois qu'il a fini de recupérer la valeur de arguments, il invoque la fonction et met le resultat dans la map
 \newline
 \newline
 \textbf{Exercice 5}
@@ -116,14 +115,14 @@ celle ci lui renvois un tuple contenant le nombre de tache executer ainsi que la
 \newline
 \textbf{2. Justifier votre choix de l’API de communication que vous avez utilisée.}
 \newline
-Nous avons choisie Rmi , car elle paraissait etre la plus adapter au problem pas besoin de gérez une base de donner 
-juste l'execution de tache sur une ou plusieur Jvm, aussi elle incluse avec java donc pas besoin d'installation préalable ce qui est un plus.
+Nous avons choisi Rmi car elle paraissait être la plus adaptée au problème. Nous n'aurons pas besoin de gérer une base de donnée,
+il faudra juste gérer l'execution de tâche sur une ou plusieurs Jvm, elle est aussi incluse dans java donc pas besoin d'installation préalable ce qui est un plus.
 \newline
 \newline
 \textbf{3. Quelle hypothèse doit-on faire sur le type des objets du contexte ? Justifiez.}
 \newline
-Ont doit fair l'hypothése que les type utiliser dans "Object" sont  sérializable car sinon en peux pas les 
-transmetre d'une machine a une autre.
+L'hypothèse serait que les types utilisés dans "Object" sont sérializable sinon on ne peut pas les 
+transmettre d'une machine à une autre.
 \newline
 \newline
 \textbf{4. Quel mécanisme avez-vous utilisé pour la notification d’avancement au client ?}
@@ -138,39 +137,43 @@ il la place a true (l'idéal c'est de gardez une trace car si deux jobe son dema
 \textbf{1. Quel est le protocole de communications entre maître-esclaves et éventuellement entre
 esclave-esclave ?}
 \newline
-1-le Maitre recois la demande a qui il affect  un id
+1-le Maitre reçoit la demande à qui il affecte un id et le renvoi au client 
 \newline
-2- le client demande sont resultat et ce mets en attente si il existe pas encore
+2- le client demande son résultat et se mets en attente si son résultat n'est pas encore prêt 
 \newline
-3-il lance un thread qui va  chercher des  esclave a qui il va demander le travail , il demande a chaqu'un si il a des slot disponible
+3-le maitre lance un thread qui va chercher  des esclaves à qui il demandera d'exécuter une tâche si possible 
 \newline
-4-une fois trouver il lui passe le nom des taches qu'il doit executer  ainsi que le Job
+4-une fois trouvé, il lui passe le nom des tâches qu'il doit exécuter ainsi que le Job
 \newline
-5-une fois terminer il mette la valeur de retour sur Taskmaster et décrémente un cpt des que celui ci est a 0 le client est libre de recupérér sont Job
+5-une fois que l'esclave a terminé, il met la valeur de retour sur Taskmaster et décrémente un cpt dès que celui-ci est à 0 le client est libre de récupérer son Job
 \newline
 \newline
 \textbf{2. Comment le maître affecte ses tâches équitablement sur les esclaves ?}
 \newline
-a chaque demande il déplace l'index du prochain esclave qui va recevoir la ou les tache 
+À chaque demande, il déplace l'index du premier esclave qui va recevoir la tâche 
 \newline
 \textbf{3. Comment les esclaves sont assurés de respecter leur borne de tâche courante ?}
 \newline
-pour chaque tache l'esclave lance un Thread au début il decrémente la variable maxtask et la fin l'incrémente
+pour chaque tâche, l'esclave lance un Thread : Au début il decrémente la variable maxtask et la fin de son exécution il l'incrémente
 \newline
 \textbf{4. Comment gérez-vous la communication d’un résultat entre deux tâches dépendantes ? Don-
 ner les avantages et les inconvénients de votre solution.}
 \newline
-Elle communique par le billet de la map qui va etre retourner a l'utilisateur a chaque fois que une tache ce termine elle mets sont resultat a l'intérieur
-et ce qui ont besoin d'un de c'est resultat wait dessu jusque leur resultat soit disponible
-elle facilite la récupération des tache puisque elle sont toute centraliser
+
+Les différentes tâches communiquent par le billet d'une map stockée sur le maitre. 
+À chaque fois qu'une tâche se termine, elle dépose sa valeur de retour sur le maître, à l'inverse, si elle a besoin d'une valeur, il va l'y récupérer. 
 \newline
 \textbf{5. (niveau 2) Comment gérez-vous le fait d’avoir plusieurs jobs en cours d’exécution sur le
 cluster ?}
 \newline
-le master ne fait que recevoir les job le reste est fait par des thread
+le master ne fait que recevoir les jobs, le reste est fait par un thread pool
 \newline
 \textbf{6. (niveau 3) Décrire le mécanisme qui permet de détecter la panne d’un esclave. Comment
 gérez-vous la réaffectation des tâches perdues ?}
+\newline
+la panne d'un esclave est détectée lors de l'affectation des tâches, si l'esclave renvoi une connection exception c'est qu'il est en panne 
+et par conséquent considéré par le thread qui affect les tâches comme tel pour le reste de l'exécution de ce thread.
+Les esclave qui avaient reçu un job reçoivent un signal d'abondon et on redemande toutes les tâches qui ne sont pas présentes dans map de resultat.
 
 \end{document}
 %\begin{algorithm}

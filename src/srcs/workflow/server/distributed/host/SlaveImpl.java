@@ -32,7 +32,6 @@ public class SlaveImpl implements TaskHandler{
 	
 	
 	public SlaveImpl(String name, Integer nb_max){
-		System.out.println("Slave Constructeur");
 		this.name=name;
 		nb_task_cur = new AtomicInteger(nb_max);
 		String nameMaster = "Master";
@@ -44,17 +43,13 @@ public class SlaveImpl implements TaskHandler{
 
 		} catch (RemoteException | NotBoundException e) {
 			e.printStackTrace();
-			System.err.println("Nop Slave ce c'est pas attacher  !!!");
 		}
-		System.out.println("Slave Constructeur OK");
-		
 	}
 
 	@Override
 	public void executeDist(long idJob, String node , Job job) throws RemoteException{
-		System.out.println("Execut dist a était appeler");
 		try {
-			pool.submit(new JobRunnerSlave(idJob,node,job),600);
+			pool.submit(new JobRunnerSlave(idJob,node,job));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
