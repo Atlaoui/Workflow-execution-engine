@@ -18,8 +18,6 @@ public interface Graph<T> extends Iterable<T> , Serializable {
 
     int size();
 
-
-
     boolean existNode(T n);
 
     List<T> getNeighborsIn(T to)throws IllegalArgumentException;

@@ -28,7 +28,6 @@ public class JobExecutorParallel extends JobExecutor{
             tasks[index].start();
             index++;
         }
-
         for(Thread t : tasks)
             t.join();
 

@@ -1,6 +1,7 @@
 package srcs.workflow.server.distributed.host;
 
 import srcs.workflow.job.JobValidator;
+import srcs.workflow.server.Tuple;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -9,18 +10,18 @@ import java.rmi.registry.Registry;
 import java.util.*;
 
 /**
- * CLass qui ce charge de run et dispatche les tache
+ * CLass qui ce charge de dispatcher les tache
  */
 public class JobRunner implements Runnable {
     private final MasterImpl m;
-    private  List<MasterImpl.Pair<String, Integer>> slaves;
+    private  List<Tuple<String, Integer>> slaves;
     private JobValidator job;
     private long idJob;
     private int indexSlave;
     private Registry reg;
     private List<String> down = new ArrayList<>();
     private Queue<String> tasks;
-    public JobRunner(JobValidator job, long id_job, int pos_slave , List<MasterImpl.Pair<String,Integer>> slaves ,MasterImpl m) {
+    public JobRunner(JobValidator job, long id_job, int pos_slave , List<Tuple<String,Integer>> slaves ,MasterImpl m) {
         this.m=m;
         this.slaves=slaves;
         try {
@@ -35,8 +36,7 @@ public class JobRunner implements Runnable {
 
     }
 
-    public JobRunner(JobValidator job, long id_job, int pos_slave , List<MasterImpl.Pair<String,Integer>> slaves ,MasterImpl m ,Set<String> set) {
-       System.out.println("Second constructeur de JobRunneur");
+    public JobRunner(JobValidator job, long id_job, int pos_slave , List<Tuple<String,Integer>> slaves , MasterImpl m , Set<String> set) {
         this.m=m;
         this.slaves=slaves;
         try {
@@ -54,19 +54,27 @@ public class JobRunner implements Runnable {
     @Override
     public void run() {
         try {
-
             TaskHandler t;
-            String nodeCur;
-            //1er boucle on envois a tlm
+            String nodeCur = null;
             boolean is_error=false;
+            // cette boucle n'est pas nécessaire pour les teste sans panne  mais la récupération
+            //est plus éfficace comme ça
+            List<String> tacheRacine = new ArrayList<>(tasks);
+            for(String node : tacheRacine)
+                if(job.getTaskGraph().getNeighborsIn(node).size()==0) {
+                    t = connectToSlave();
+                    t.executeDist(idJob, node, job.getJob());
+                    tasks.remove(node);
+                }
+
+
             while(!tasks.isEmpty()) {
-                is_error=false;
-                nodeCur=tasks.element();
+                if(is_error)
+                    break;
                 try {
                     t = connectToSlave();
-                    if (t == null)
-                        continue;
-                    if (t.getNbCurTasks() != 0)
+                    nodeCur=tasks.element();
+
                        t.executeDist(idJob, nodeCur, job.getJob());
                     //ont dispatche au slave max task possible sur chaque serveur
 
@@ -78,10 +86,10 @@ public class JobRunner implements Runnable {
                     tasks.remove(nodeCur);
             }
             //verification que toutes les tache sont terminer
-            if(is_error && m.getRetvalues().get(idJob).id!=0){
+            if(is_error && m.getRetvalues().get(idJob).getName() !=0){
                 //list des tache no terminer
                 List<String> toCheck = new ArrayList<>(job.getTaskGraph().getAllNodes());
-                toCheck.removeAll(m.getRetvalues().get(idJob).value.keySet());
+                toCheck.removeAll(m.getRetvalues().get(idJob).getValue().keySet());
 
                 toCheck.sort((a, b) -> Integer.compare(job.getTaskGraph().getNeighborsIn(b).size(), job.getTaskGraph().getNeighborsIn(a).size()));
                 CanncelAllJobs(idJob);
@@ -98,16 +106,21 @@ public class JobRunner implements Runnable {
             }
         } catch (RemoteException  e) {
             e.printStackTrace();
+            CanncelAllJobs(idJob);
         }
-        System.out.println("Le thread a fini de demander a et met la valeur dans la map est de taille "+m.getRetvalues().size());
     }
 
+    /**
+     * permet d'intrupt tout les tache  demander et qui sont lier a l'id de ce job
+     * @param idJob
+     * id du job en cours
+     */
     private void CanncelAllJobs(long idJob) {
-        for(MasterImpl.Pair<String,Integer> p : slaves){
+        for(Tuple<String,Integer> p : slaves){
             TaskHandler slave = null;
-            if(!down.contains(p.id))
+            if(!down.contains(p.getName()))
                 try {
-                    slave = (TaskHandler) reg.lookup(p.id);
+                    slave = (TaskHandler) reg.lookup(p.getName());
                     slave.cancelJob(idJob);
                 } catch (RemoteException | NotBoundException e) {
                     e.printStackTrace();
@@ -115,23 +128,28 @@ public class JobRunner implements Runnable {
         }
     }
 
+    /**
+     * elle permet la connextion a serveur quoi qu'il arrive et isole les serveur mort
+     * et verifie que la jvm distante puisse recevoir des job
+     * @return
+     * le serveur sélectionner
+     */
     private TaskHandler connectToSlave()  {
-        System.out.println("Petit Thread : commence connect to Slave");
-        MasterImpl.Pair<String,Integer> p;
+       Tuple<String,Integer> p;
         boolean isfound=false;
         TaskHandler slave = null;
         while(!isfound){
             do //on tourne tant que le node n'est pas marquer comme en panne
                 p = slaves.get((indexSlave++) % slaves.size());
-            while(down.contains(p.id));
+            while(down.contains(p.getName()));
             try {
-                slave = (TaskHandler) reg.lookup(p.id);
+                slave = (TaskHandler) reg.lookup(p.getName());
                 if(slave.getNbCurTasks()!=0)
                     isfound=true;
             }catch(NotBoundException e){
                 e.printStackTrace();// a cause du décalage au début
             }catch (RemoteException e){
-                down.add(p.id);
+                down.add(p.getName());
             }
         }
         return slave;

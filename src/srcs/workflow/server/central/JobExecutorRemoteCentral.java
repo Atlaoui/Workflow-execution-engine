@@ -27,10 +27,9 @@ public class JobExecutorRemoteCentral extends JobExecutor implements Remote , Se
         Host s1 = (Host)registry.lookup(name);
        long id =s1.executeDist(jobV);
        while (jobV.getTaskGraph().size()!= s1.is_finished(id)) {
-           Thread.sleep(100);
+           Thread.sleep(200);
        }
        System.out.println(s1.is_finished(id));
-
 	    return  s1.getMyResult(id);
     }
 }

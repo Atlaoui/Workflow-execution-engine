@@ -1,8 +1,8 @@
 package srcs.workflow.server.central.host;
 
 import srcs.workflow.job.*;
+import srcs.workflow.server.Tuple;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.rmi.RemoteException;
@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class HostImpl implements Host{
     private String Hostname;
-    private ConcurrentHashMap<Long,Tuple<AtomicInteger, Map<String, Object>>> tasks = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Long, Tuple<AtomicInteger, Map<String, Object>>> tasks = new ConcurrentHashMap<>();
     private Long ID_CUR = 0L;
 
     public HostImpl(String name){
@@ -42,13 +42,13 @@ public class HostImpl implements Host{
     @Override
 	public Integer is_finished(long id_job) throws RemoteException {
 		if(tasks.containsKey(id_job))
-             return tasks.get(id_job).x.get();
+             return tasks.get(id_job).getName().get();
 		return 0;
 	}
 
     @Override
     public Map<String, Object> getMyResult(long id_job) {
-        return tasks.get(id_job).y;
+        return tasks.get(id_job).getValue();
     }
 
     // pour avoir des id qui tourne
@@ -57,14 +57,14 @@ public class HostImpl implements Host{
     }
 
     private synchronized Object getArg(String Name ,long id_job){
-        while (!tasks.get(id_job).y.containsKey(Name)) {
+        while (!tasks.get(id_job).getValue().containsKey(Name)) {
             try {
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        return tasks.get(id_job).y.get(Name);
+        return tasks.get(id_job).getValue().get(Name);
     }
 
     private synchronized void relaseAll(){
@@ -94,8 +94,8 @@ public class HostImpl implements Host{
                     }
                     index++;
                 }
-                tasks.get(id_thread).x.getAndAdd(1);
-                tasks.get(id_thread).y.put(node,m.invoke(job_t,args));
+                tasks.get(id_thread).getName().getAndAdd(1);
+                tasks.get(id_thread).getValue().put(node,m.invoke(job_t,args));
                 relaseAll();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -109,11 +109,5 @@ public class HostImpl implements Host{
             throw new Exception("Method not fund");
         }
     }
-    //a factoriser aussi
-    private class Tuple<X, Y> implements Serializable {
-        private static final long serialVersionUID = 1L;
-        public  X x;
-        public  Y y;
-        public Tuple(X x, Y y) { this.x = x; this.y = y;}
-    }
+
 }

@@ -121,6 +121,22 @@ public class GraphImpl<T> implements Graph<T> {
         return map.keySet().iterator();
     }
 
+
+
+    @Override
+    public String toString() {
+        StringBuilder S = new StringBuilder();
+        for(Map.Entry<T, Tuple> entry: map.entrySet()){
+            S.append("Node ").append(entry.getKey()).append("\n");
+            S.append("Vertex in : ").append(entry.getValue().vertex_in).append("\n");
+            S.append("Vertex out : ").append(entry.getValue().vertex_out).append("\n");
+        }
+        return S.toString();
+    }
+
+    /**
+     * Simple classe pour faciliter les acces au deux list
+     */
     private class Tuple implements Serializable {
         /**
          * Version
@@ -139,15 +155,4 @@ public class GraphImpl<T> implements Graph<T> {
         }
     }
 
-
-    @Override
-    public String toString() {
-        StringBuilder S = new StringBuilder();
-        for(Map.Entry<T, Tuple> entry: map.entrySet()){
-            S.append("Node ").append(entry.getKey()).append("\n");
-            S.append("Vertex in : ").append(entry.getValue().vertex_in).append("\n");
-            S.append("Vertex out : ").append(entry.getValue().vertex_out).append("\n");
-        }
-        return S.toString();
-    }
 }

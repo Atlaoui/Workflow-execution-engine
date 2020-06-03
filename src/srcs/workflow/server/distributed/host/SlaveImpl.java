@@ -4,6 +4,7 @@ import srcs.workflow.job.Context;
 import srcs.workflow.job.Job;
 import srcs.workflow.job.LinkFrom;
 import srcs.workflow.job.Task;
+import srcs.workflow.server.Tuple;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,7 +51,7 @@ public class SlaveImpl implements TaskHandler{
 	@Override
 	public void executeDist(long idJob, String node , Job job) throws RemoteException{
 		try {
-			toCancel.add(new Tuple<>(idJob,pool.submit(new JobRunnerSlave(idJob,node,job),2000)));
+			toCancel.add(new Tuple<>(idJob,pool.submit(new JobRunnerSlave(idJob,node,job))));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,13 +59,10 @@ public class SlaveImpl implements TaskHandler{
 
 	@Override
 	public void cancelJob(long idJob) throws RemoteException {
-		System.out.println("Cancel");
 		for(Tuple<Long,Future<?>> t : toCancel){
-			if(t.id==idJob && !t.value.isDone() && !t.value.isCancelled())
-				t.value.cancel(true);
+			if(t.getName() ==idJob && !t.getValue().isDone() && !t.getValue().isCancelled())
+				t.getValue().cancel(true);
 			nb_task_cur.getAndIncrement();
-			if(t.value.isCancelled())
-				System.out.println("YOUHOUUUUUUUUUUUUUUUUU");
 		}
 	}
 
@@ -81,7 +79,6 @@ public class SlaveImpl implements TaskHandler{
 		@Override
 		public void run() {
 			try {
-				System.out.println("le thread de l'esclave commence sont job");
 				Method m = getMethodByName(n);
 				assert m != null;
 				int index = 0;
@@ -126,14 +123,4 @@ public class SlaveImpl implements TaskHandler{
 		return name;
 	}
 
-	/**
-	 * Class pour pour faciliter la géstion d'esclave
-	 * @param <T> l id supposer unique
-	 * @param <V> la valeur associer
-	 */
-	private static class Tuple<T, V>{
-		private  T id;
-		private   V value;
-		public Tuple(T name, V nb ) { this.id = name; this.value = nb;}
-	}
 }

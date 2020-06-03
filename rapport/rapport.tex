@@ -63,6 +63,7 @@ Si on utilisait le nom d'une méthode en tant qu'identifiant de tâche,
 \newline
 \textbf{Exercice 3}
 \newline
+\newline
 \textbf{2. Donner les grandes lignes de votre algorithme de la méthode execute. Il est attendu un
 algorithme décrit de manière synthétique et non un copier/coller de votre code.}
 
@@ -100,6 +101,7 @@ des autres tâches qui ne peuvent pas encore être exécutées, puis parcourir l
 \newline
 \textbf{Exercice 4}
 \newline
+\newline
 \textbf{1. Décrire comment vous avez assuré le parallélisme des tâches indépendantes.}
 \newline
 \newline
@@ -110,13 +112,17 @@ il attend Une fois qu'il a fini de recupérer la valeur de arguments, il invoque
 \newline
 \textbf{Exercice 5}
 \newline
+\newline
 \textbf{1. Décrire votre protocole de communication}
+\newline
 \newline
 Le JobExecutorRemote demande demande le calcule d'un job a une jvm distante puis il ce mets on attente
 que celle ci lui renvois la Map String , Object  calculer.
 une fois fait il demande sont resultat
 \newline
+\newline
 \textbf{2. Justifier votre choix de l’API de communication que vous avez utilisée.}
+\newline
 \newline
 Nous avons choisi Rmi car elle paraissait être la plus adaptée au problème. Nous n'aurons pas besoin de gérer une base de donnée,
 il faudra juste gérer l'execution de tâche sur une ou plusieurs Jvm, elle est aussi incluse dans java donc pas besoin d'installation préalable ce qui est un plus.
@@ -138,6 +144,7 @@ pour connaitre l'avancement de la tache le client demande au serveur qui va lui 
 \newline
 \textbf{Exercice 6}
 \newline
+\newline
 \textbf{1. Quel est le protocole de communications entre maître-esclaves et éventuellement entre
 esclave-esclave ?}
 \newline
@@ -157,27 +164,38 @@ esclave-esclave ?}
 À chaque demande, il déplace l'index du premier esclave qui va recevoir la tâche ainsi il effectue une rotation complete et les thread qui demande 
 les tache font de meme.
 \newline
+\newline
 \textbf{3. Comment les esclaves sont assurés de respecter leur borne de tâche courante ?}
 \newline
+\newline
 pour chaque tâche, l'esclave lance un Thread : Au début il decrémente la variable maxtask et la fin de son exécution il l'incrémente
+\newline
 \newline
 \textbf{4. Comment gérez-vous la communication d’un résultat entre deux tâches dépendantes ? Don-
 ner les avantages et les inconvénients de votre solution.}
 \newline
+\newline
 Les différentes tâches communiquent par le billet d'une map stockée sur le maitre. 
 À chaque fois qu'une tâche se termine, elle dépose sa valeur de retour sur le maître, à l'inverse, si elle a besoin d'une valeur, il va l'y récupérer. 
+\newline
 \newline
 \textbf{5. (niveau 2) Comment gérez-vous le fait d’avoir plusieurs jobs en cours d’exécution sur le
 cluster ?}
 \newline
+\newline
 le master ne fait que recevoir les jobs, le reste est fait par un thread pool
+\newline
 \newline
 \textbf{6. (niveau 3) Décrire le mécanisme qui permet de détecter la panne d’un esclave. Comment
 gérez-vous la réaffectation des tâches perdues ?}
 \newline
-la panne d'un esclave est détectée lors de l'affectation des tâches, si l'esclave renvoi une connection exception c'est qu'il est en panne 
+\newline
+la panne d'un esclave est détectée lors de l'affectation des tâches ou plutar a l'aide d'un démon, si l'esclave renvoi une connection exception c'est qu'il est en panne 
 et par conséquent considéré par le thread qui affect les tâches comme tel pour le reste de l'exécution de ce thread.
-Les esclave qui avaient reçu un job reçoivent un signal d'abondon et on redemande toutes les tâches qui ne sont pas présentes dans map de resultat.
+et si la panne survient plutar le démon regarde si le job existe depuis trop longtemps il va relancer la réalisation du job.
+Les esclave qui avaient reçu une tache pour ce job reçoivent un signal d'abondon et on redemande toutes les tâches qui ne sont pas présentes dans map de resultat.
+\newline
+(le dernier teste ne fonctionne pas car selon la réaffectation des tâches la terminaison est trop lente)
 
 \end{document}
 %\begin{algorithm}

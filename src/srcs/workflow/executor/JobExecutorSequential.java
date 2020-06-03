@@ -20,7 +20,6 @@ public class JobExecutorSequential extends JobExecutor{
     @Override
     public Map<String, Object> execute() throws Exception {
         Map<String, Object> retValues = new HashMap<>();
-        //
         Object[] args;
         int index ;
         List<Method> Mlist = new ArrayList<>();

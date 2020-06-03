@@ -1,14 +1,9 @@
 package srcs.workflow.server.distributed.host;
 
-
-import srcs.workflow.job.Job;
 import srcs.workflow.job.JobValidator;
+import srcs.workflow.server.Tuple;
 
-import java.io.Serializable;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,18 +19,17 @@ public class MasterImpl implements TaskMaster {
 
 	/***************************Pannes************************************/
 	private Thread demon = new Thread( new Demon());
-	private List<Pair<Long, JobValidator>> notFinished = new ArrayList<>();
-
+	private List<Tuple<Long, JobValidator>> notFinished = new ArrayList<>();
 	/*********************************************************************/
 
 	/*********************Con avec les esclave ***************************/
-	private CopyOnWriteArrayList<Pair<String,Integer>> slaves = new CopyOnWriteArrayList<>();
+	private CopyOnWriteArrayList<Tuple<String,Integer>> slaves = new CopyOnWriteArrayList<>();
 
-	private ConcurrentHashMap<Long,Pair<Integer,Map<String, Object>>> Retvalues= new ConcurrentHashMap<>();
+	private ConcurrentHashMap<Long,Tuple<Integer,Map<String, Object>>> Retvalues= new ConcurrentHashMap<>();
 
 	/***********************Gestion des acces au map **********************************/
 
-	private ReentrantLock lock = new ReentrantLock();
+	private ReentrantLock lock = new ReentrantLock(true);
 	private Condition condition = lock.newCondition();
 
 	private ExecutorService pool = Executors.newCachedThreadPool();
@@ -51,8 +45,8 @@ public class MasterImpl implements TaskMaster {
 
 	/************************************************************/
 	public MasterImpl(){
-	//	demon.setDaemon(true);
-	//	demon.start();
+		demon.setDaemon(true);
+		demon.start();
 	}
     @Override
     public long executeTask(JobValidator job) throws RemoteException {
@@ -61,43 +55,40 @@ public class MasterImpl implements TaskMaster {
 			catch (InterruptedException e) { e.printStackTrace(); }
 
 			long id = ID_JOB_CUR.getAndIncrement();
-			Retvalues.put(id,new Pair<>(job.getTaskGraph().size(),new HashMap<>()));
-			notFinished.add(new Pair<Long,JobValidator>(id,job));
+			Retvalues.put(id,new Tuple<>(job.getTaskGraph().size(),new HashMap<>()));
+			notFinished.add(new Tuple<>(id,job));
 			int pos = POS_CUR.get();
 			POS_CUR.set((pos+1)%slaves.size());
 			pool.execute(new JobRunner(job,id,pos,slaves,this));
-
         return id;
     }
 
 
 	@Override
     public  void  putResult(long key, String name , Object value){
-		System.out.println("Je put result");
 		try {
 			lock.lock();
-			Retvalues.get(key).id--;
-			Retvalues.get(key).value.put(name,value);
+			if(!Retvalues.get(key).getValue().containsKey(name)) {
+				Retvalues.get(key).setName(Retvalues.get(key).getName() - 1);
+				Retvalues.get(key).getValue().put(name, value);
+			}
 			condition.signalAll();
 		}finally {
-			if(Retvalues.get(key).id==0)
-				notFinished.removeIf(p -> p.id == key);
+			if(Retvalues.get(key).getName() ==0)
+				notFinished.removeIf(p -> p.getName() == key);
 			lock.unlock();
 		}
-		System.out.println("fin Je put result");
-    }
+	}
 
 	@Override
 	public Map<String, Object> getResult(long key ,String nom) throws RemoteException, InterruptedException {
 		try {
-			System.out.println("Je get result");
 			lock.lock();
-			while (!Retvalues.get(key).value.containsKey(nom))
+			while (!Retvalues.get(key).getValue().containsKey(nom))
 				condition.await();
-			return Retvalues.get(key).value;
+			return Retvalues.get(key).getValue();
 		} finally {
 			lock.unlock();
-			System.out.println("Fin de get result");
 		}
 	}
 
@@ -112,39 +103,29 @@ public class MasterImpl implements TaskMaster {
 	@Override
 	public void attach(String SlaveName,Integer nbMax) throws RemoteException{
     	System.out.println("Je m'attache name= "+SlaveName +" mon nb max de tache = "+nbMax);
-    	slaves.add(new Pair<>(SlaveName, nbMax));
+    	slaves.add(new Tuple<>(SlaveName, nbMax));
     }
 
 
 	@Override
 	public boolean isJobReady(long id) throws RemoteException {
-		return (Retvalues.get(id).id==0);
+		return (Retvalues.get(id).getName() ==0);
 	}
 
 	@Override
 	public  Map<String, Object> getJob(long id) throws RemoteException {
-		return Retvalues.get(id).value;
+		return Retvalues.get(id).getValue();
 	}
 
 
 	/**
 	 * ce charge de run un job pour le Master
 	 */
-	ConcurrentHashMap<Long, Pair<Integer, Map<String, Object>>> getRetvalues() {
+	ConcurrentHashMap<Long, Tuple<Integer, Map<String, Object>>> getRetvalues() {
 		return Retvalues;
 	}
 
-	/**
-	 * Class pour pour faciliter la géstion d'esclave
-	 * @param <T> l id supposer unique
-	 * @param <V> la valeur associer
-	 */
-	 static class Pair<T, V> implements Serializable{
-		private static final long serialVersionUID = 1L;
-		public  T id;
-		public  V value;
-		public Pair(T name, V nb) { this.id = name; this.value = nb;}
-	}
+
 
 	/**
 	 * Thread démon qui va ce charger de checker si un job a était fait ou pas
@@ -157,19 +138,23 @@ public class MasterImpl implements TaskMaster {
 		public void run() {
 			try {
 				List<Long> ids = new ArrayList<>();
+				boolean clean = false;
 				while(!Thread.currentThread().isInterrupted()){
 					Thread.sleep(10000);
-					for(Pair<Long,JobValidator> p : notFinished)
-						if(list_ids.contains(p.id)){
-							if(Retvalues.get(p.id).id!=0)
-								pool.execute(new JobRunner(p.value, p.id, 0, slaves, MasterImpl.this,Retvalues.get(p.id).value.keySet()));
-							ids.add(p.id);
+					clean = false;
+					for(Tuple<Long,JobValidator> p : notFinished)
+						if(list_ids.contains(p.getName())){
+							if(Retvalues.get(p.getName()).getName() !=0)
+								pool.execute(new JobRunner(p.getValue(), p.getName(), 0, slaves, MasterImpl.this, Retvalues.get(p.getName()).getValue().keySet()));
+							ids.add(p.getName());
 							condition.signalAll();
-							Thread.sleep(2000);
+							clean = true;
+							Thread.sleep(1000);
 						}else {
-							list_ids.add(p.id);
+							list_ids.add(p.getName());
 						}
-					notFinished.removeIf(p -> ids.contains(p.id));
+					if(clean)
+						notFinished.removeIf(p -> ids.contains(p.getName()));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();

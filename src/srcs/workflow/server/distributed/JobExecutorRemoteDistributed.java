@@ -17,7 +17,7 @@ public class JobExecutorRemoteDistributed extends JobExecutor{
     @Override
     public Map<String, Object> execute() throws Exception {
     	System.out.println("Je commence le execute");
-        
+
     	Registry registry = LocateRegistry.getRegistry("localhost");
         
         TaskMaster master = (TaskMaster) registry.lookup("Master");

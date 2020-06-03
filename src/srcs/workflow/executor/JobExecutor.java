@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class JobExecutor  {
     protected JobValidator jobV;
+    // pas vraiment nécessaisre au final
     private ReentrantReadWriteLock lock = new  ReentrantReadWriteLock();
     public JobExecutor(Job job){
         try {
@@ -22,6 +23,7 @@ public abstract class JobExecutor  {
 
     public abstract Map<String,Object> execute() throws Exception;
 
+    // les lock non pas était necessaire au final
     public Graph<String> aquireGraph(){
             lock.readLock().lock();
             return jobV.getTaskGraph();

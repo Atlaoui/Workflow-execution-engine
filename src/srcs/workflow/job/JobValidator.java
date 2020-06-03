@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class JobValidator implements Serializable {
@@ -21,27 +20,14 @@ public class JobValidator implements Serializable {
         this.job=job;
 
     }
-    private Class<?> getObjectClass(Object obj) throws ValidationException {
-        if(obj instanceof Integer)
-            return Integer.class;
 
-        if (obj instanceof Number) {
-            return Number.class;
-        }
-
-        if (obj instanceof String)
-        {
-            return String.class;
-        }
-        if(obj instanceof Double)
-            return Double.class;
-        if (obj instanceof Boolean)
-            return Boolean.class;
-
-
-        throw new ValidationException();
-    }
-
+    /**
+     * ce charge des contrainte sur Task.class
+     * @param map
+     * @param job
+     * @return
+     * @throws ValidationException
+     */
     private boolean TasksConstraint(Map<String,Class<?>> map,Job job) throws ValidationException{
         boolean is_one = false;
         String value;
@@ -53,8 +39,6 @@ public class JobValidator implements Serializable {
                     return false;
                 else
                     map.put(value, m.getReturnType());
-                //nb_tasks++;
-                //si la method return void
                 if (m.getReturnType() == Void.TYPE)
                     return false;
                 //si la methode est statik
@@ -65,11 +49,16 @@ public class JobValidator implements Serializable {
                 }catch(IllegalArgumentException e){
                     throw new ValidationException();
                 }
-
             }
         }
         return is_one;
     }
+
+    /**
+     * assure le reste contrainte
+     * @param job
+     * @throws ValidationException
+     */
     private void Constraints(Job job)throws ValidationException{
         Map<String,Class<?>> tasks_Id = new HashMap<>();
         Map<String,Class<?>> cont = new HashMap<>();
@@ -81,7 +70,7 @@ public class JobValidator implements Serializable {
             throw new ValidationException();
 
         for(Map.Entry<String, Object> entry : job.getContext().entrySet())
-            cont.put(entry.getKey(),getObjectClass(entry.getValue()));
+            cont.put(entry.getKey(),  entry.getValue().getClass());
         for (Method m : job.getClass().getMethods()) {//voir si c pas mieux le declared
             if (m.isAnnotationPresent(Task.class)) {
                 Annotation[][] ano = m.getParameterAnnotations();
