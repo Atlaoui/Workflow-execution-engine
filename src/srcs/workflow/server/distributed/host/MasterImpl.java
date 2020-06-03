@@ -23,8 +23,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class MasterImpl implements TaskMaster {
 
 	/***************************Pannes************************************/
-	private Thread demon;
-	private List<Pair<Long, Job>> notFinished = new ArrayList<>();
+	private Thread demon = new Thread( new Demon());
+	private List<Pair<Long, JobValidator>> notFinished = new ArrayList<>();
 
 	/*********************************************************************/
 
@@ -35,7 +35,7 @@ public class MasterImpl implements TaskMaster {
 
 	/***********************Gestion des acces au map **********************************/
 
-	private ReentrantLock lock = new ReentrantLock(true);
+	private ReentrantLock lock = new ReentrantLock();
 	private Condition condition = lock.newCondition();
 
 	private ExecutorService pool = Executors.newCachedThreadPool();
@@ -50,16 +50,19 @@ public class MasterImpl implements TaskMaster {
 	private AtomicInteger POS_CUR =new AtomicInteger(0);
 
 	/************************************************************/
-
+	public MasterImpl(){
+	//	demon.setDaemon(true);
+	//	demon.start();
+	}
     @Override
     public long executeTask(JobValidator job) throws RemoteException {
-    		System.out.println("Master : Je demande l'execution d'un job");
     		// attendre le temps que les slaves s'atache
 			while(slaves.size() == 0) try { Thread.sleep(500); }
 			catch (InterruptedException e) { e.printStackTrace(); }
 
 			long id = ID_JOB_CUR.getAndIncrement();
 			Retvalues.put(id,new Pair<>(job.getTaskGraph().size(),new HashMap<>()));
+			notFinished.add(new Pair<Long,JobValidator>(id,job));
 			int pos = POS_CUR.get();
 			POS_CUR.set((pos+1)%slaves.size());
 			pool.execute(new JobRunner(job,id,pos,slaves,this));
@@ -77,6 +80,8 @@ public class MasterImpl implements TaskMaster {
 			Retvalues.get(key).value.put(name,value);
 			condition.signalAll();
 		}finally {
+			if(Retvalues.get(key).id==0)
+				notFinished.removeIf(p -> p.id == key);
 			lock.unlock();
 		}
 		System.out.println("fin Je put result");
@@ -96,6 +101,14 @@ public class MasterImpl implements TaskMaster {
 		}
 	}
 
+	/**
+	 * permet a un esclave de s'attacher au master
+	 * @param SlaveName
+	 * nom de l'esclave
+	 * @param nbMax
+	 * nombre max de tache de l'esclave
+	 * @throws RemoteException
+	 */
 	@Override
 	public void attach(String SlaveName,Integer nbMax) throws RemoteException{
     	System.out.println("Je m'attache name= "+SlaveName +" mon nb max de tache = "+nbMax);
@@ -117,7 +130,6 @@ public class MasterImpl implements TaskMaster {
 	/**
 	 * ce charge de run un job pour le Master
 	 */
-
 	ConcurrentHashMap<Long, Pair<Integer, Map<String, Object>>> getRetvalues() {
 		return Retvalues;
 	}
@@ -133,99 +145,35 @@ public class MasterImpl implements TaskMaster {
 		public  V value;
 		public Pair(T name, V nb) { this.id = name; this.value = nb;}
 	}
-}
-/*	private class JobRunner implements Runnable {
-		private JobValidator job;
-		private long idJob;
-		private int indexSlave;
-		private Registry reg;
-		private List<String> down = new ArrayList<>();
-		public JobRunner( JobValidator job, long id_job, int pos_slave) {
-			try {
-				this.reg=LocateRegistry.getRegistry("localhost");
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-			;
-			this.job=job;
-			idJob=id_job;
-			indexSlave=pos_slave;
-		}
+
+	/**
+	 * Thread démon qui va ce charger de checker si un job a était fait ou pas
+	 * sinon il le relance
+	 */
+	private class Demon implements Runnable {
+		List<Long> list_ids = new LinkedList<>();
 
 		@Override
 		public void run() {
-			System.out.println("Le thread a commencer de demander a et met la valeur dans la map est de "+Retvalues.size());
 			try {
-				Queue<String> tasks = new ArrayDeque<>(job.getTaskGraph().getAllNodes());
-				TaskHandler t;
-				String nodeCur;
-				//1er boucle on envois a tlm
-				boolean is_error=false;
-				while(!tasks.isEmpty()) {
-					if(is_error)
-						break;
-					nodeCur=tasks.element();
-					try {
-						t = connectToSlave();
-						if (t == null)
-							continue;
-						if (t.getNbCurTasks() != 0) {
-							//ont dispatche au slave max task possible sur chaque serveur
-							t.executeDist(idJob, nodeCur, job.getJob());
+				List<Long> ids = new ArrayList<>();
+				while(!Thread.currentThread().isInterrupted()){
+					Thread.sleep(10000);
+					for(Pair<Long,JobValidator> p : notFinished)
+						if(list_ids.contains(p.id)){
+							if(Retvalues.get(p.id).id!=0)
+								pool.execute(new JobRunner(p.value, p.id, 0, slaves, MasterImpl.this,Retvalues.get(p.id).value.keySet()));
+							ids.add(p.id);
+							condition.signalAll();
+							Thread.sleep(2000);
+						}else {
+							list_ids.add(p.id);
 						}
-					} catch (RemoteException e) {
-						e.printStackTrace();
-						is_error=true;
-					}
-					if(!is_error)
-						tasks.remove(nodeCur);
+					notFinished.removeIf(p -> ids.contains(p.id));
 				}
-				//verification que toutes les tache sont terminer
-
-				if(is_error && Retvalues.get(idJob).id!=0){
-					//list des tache no terminer
-					Queue<String> toCheck = new ArrayDeque<>(job.getTaskGraph().getAllNodes());
-					 toCheck.removeAll(Retvalues.get(idJob).value.keySet());
-
-					 while (!toCheck.isEmpty()){
-					 	System.out.println("Dans check");
-					 	System.out.println(toCheck);
-						 t = connectToSlave();
-						 if(t==null)
-						 	continue;
-						 if(t.getNbCurTasks()!=0) {
-							 //ont dispatche au slave max task possible sur chaque serveur
-							 t.executeDist(idJob, toCheck.remove(),job.getJob());
-						 }
-					 }
-				}
-			} catch (RemoteException  e) {
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			System.out.println("Le thread a fini de demander a et met la valeur dans la map est de taille "+Retvalues.size());
 		}
-
-		private TaskHandler connectToSlave()  {
-			System.out.println("Petit Thread : commence connect to Slave");
-			Pair<String,Integer> p;
-			boolean isfound=false;
-			TaskHandler slave = null;
-			while(!isfound){
-				do //on tourne tant que le node n'est pas marquer comme en panne
-					p = slaves.get((indexSlave++) % slaves.size());
-				while(down.contains(p.id));
-				try {
-					slave = (TaskHandler) reg.lookup(p.id);
-					if(slave.getNbCurTasks()!=0)
-						isfound=true;
-				}catch(NotBoundException e){
-					e.printStackTrace();// a cause du décalage au début
-				}catch (RemoteException e){
-					down.add(p.id);
-				}
-			}
-			return slave;
-		}
-
 	}
-*/
+}

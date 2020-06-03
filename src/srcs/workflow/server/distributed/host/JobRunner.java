@@ -19,6 +19,7 @@ public class JobRunner implements Runnable {
     private int indexSlave;
     private Registry reg;
     private List<String> down = new ArrayList<>();
+    private Queue<String> tasks;
     public JobRunner(JobValidator job, long id_job, int pos_slave , List<MasterImpl.Pair<String,Integer>> slaves ,MasterImpl m) {
         this.m=m;
         this.slaves=slaves;
@@ -27,32 +28,48 @@ public class JobRunner implements Runnable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        ;
         this.job=job;
         idJob=id_job;
         indexSlave=pos_slave;
+        tasks = new ArrayDeque<>(job.getTaskGraph().getAllNodes());
+
+    }
+
+    public JobRunner(JobValidator job, long id_job, int pos_slave , List<MasterImpl.Pair<String,Integer>> slaves ,MasterImpl m ,Set<String> set) {
+       System.out.println("Second constructeur de JobRunneur");
+        this.m=m;
+        this.slaves=slaves;
+        try {
+            this.reg= LocateRegistry.getRegistry("localhost");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        this.job=job;
+        idJob=id_job;
+        indexSlave=pos_slave;
+        this.tasks = new ArrayDeque<>(job.getTaskGraph().getAllNodes());
+        tasks.removeIf(set::contains);
     }
 
     @Override
     public void run() {
         try {
-            Queue<String> tasks = new ArrayDeque<>(job.getTaskGraph().getAllNodes());
+
             TaskHandler t;
             String nodeCur;
             //1er boucle on envois a tlm
             boolean is_error=false;
             while(!tasks.isEmpty()) {
-                if(is_error)
-                    break;
+                is_error=false;
                 nodeCur=tasks.element();
                 try {
                     t = connectToSlave();
                     if (t == null)
                         continue;
-                    if (t.getNbCurTasks() != 0) {
-                        //ont dispatche au slave max task possible sur chaque serveur
-                        t.executeDist(idJob, nodeCur, job.getJob());
-                    }
+                    if (t.getNbCurTasks() != 0)
+                       t.executeDist(idJob, nodeCur, job.getJob());
+                    //ont dispatche au slave max task possible sur chaque serveur
+
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     is_error=true;
@@ -66,14 +83,11 @@ public class JobRunner implements Runnable {
                 List<String> toCheck = new ArrayList<>(job.getTaskGraph().getAllNodes());
                 toCheck.removeAll(m.getRetvalues().get(idJob).value.keySet());
 
-                toCheck.sort((a, b) -> Integer.compare(job.getTaskGraph().getNeighborsIn((String) b).size(), job.getTaskGraph().getNeighborsIn((String) a).size()));
-
+                toCheck.sort((a, b) -> Integer.compare(job.getTaskGraph().getNeighborsIn(b).size(), job.getTaskGraph().getNeighborsIn(a).size()));
                 CanncelAllJobs(idJob);
-
+                
                 while (!toCheck.isEmpty()){
-                    System.out.println("Dans check");
-                    System.out.println(toCheck);
-                    t = connectToSlave();
+                     t = connectToSlave();
                     if(t==null)
                         continue;
                     if(t.getNbCurTasks()!=0) {

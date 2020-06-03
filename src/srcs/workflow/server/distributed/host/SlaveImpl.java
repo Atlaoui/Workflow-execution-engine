@@ -50,7 +50,7 @@ public class SlaveImpl implements TaskHandler{
 	@Override
 	public void executeDist(long idJob, String node , Job job) throws RemoteException{
 		try {
-			toCancel.add(new Tuple<>(idJob,pool.submit(new JobRunnerSlave(idJob,node,job))));
+			toCancel.add(new Tuple<>(idJob,pool.submit(new JobRunnerSlave(idJob,node,job),2000)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -99,7 +99,6 @@ public class SlaveImpl implements TaskHandler{
 					index++;
 				}
 				master.putResult(id,n,m.invoke(j,args));
-
 			}catch (InterruptedException | IllegalAccessException | InvocationTargetException | RemoteException e) {
 				e.printStackTrace();
 				Thread.currentThread().interrupt();
