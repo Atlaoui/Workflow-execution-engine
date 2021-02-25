@@ -131,6 +131,7 @@ cependant le seul default de l'api est la notification du client qui ne peux etr
 \newline
 \textbf{3. Quelle hypothèse doit-on faire sur le type des objets du contexte ? Justifiez.}
 \newline
+\newline
 L'hypothèse serait que les types utilisés dans "Object" sont sérializable sinon on ne peut pas les 
 transmettre d'une machine à une autre.
 \newline
@@ -148,6 +149,7 @@ pour connaitre l'avancement de la tache le client demande au serveur qui va lui 
 \textbf{1. Quel est le protocole de communications entre maître-esclaves et éventuellement entre
 esclave-esclave ?}
 \newline
+\newline
 1-le Maitre reçoit la demande à qui il affecte un id et le renvoi au client 
 \newline
 2- le client demande son résultat et se mets en attente si son résultat n'est pas encore prêt 
@@ -160,6 +162,7 @@ esclave-esclave ?}
 \newline
 \newline
 \textbf{2. Comment le maître affecte ses tâches équitablement sur les esclaves ?}
+\newline
 \newline
 À chaque demande, il déplace l'index du premier esclave qui va recevoir la tâche ainsi il effectue une rotation complete et les thread qui demande 
 les tache font de meme.
@@ -192,10 +195,12 @@ gérez-vous la réaffectation des tâches perdues ?}
 \newline
 la panne d'un esclave est détectée lors de l'affectation des tâches ou plutar a l'aide d'un démon, si l'esclave renvoi une connection exception c'est qu'il est en panne 
 et par conséquent considéré par le thread qui affect les tâches comme tel pour le reste de l'exécution de ce thread.
-et si la panne survient plutar le démon regarde si le job existe depuis trop longtemps il va relancer la réalisation du job.
-Les esclave qui avaient reçu une tache pour ce job reçoivent un signal d'abondon et on redemande toutes les tâches qui ne sont pas présentes dans map de resultat.
+et si la panne survient plutar le démon devrais la détecter, il va regarde si le job existe depuis trop longtemps il va relancer la réalisation du job.
 \newline
-(le dernier teste ne fonctionne pas car selon la réaffectation des tâches la terminaison est trop lente)
+les esclave qui avaient reçu une tache pour ce job reçoivent un signal d'abondon et on redemande toutes les tâches qui ne sont pas présentes dans map de resultat.
+\newline
+\newline
+(Le dernier test fonctionne un coup sur deux , j'ai pas encore trouver d'oû cela peut venir)
 
 \end{document}
 %\begin{algorithm}

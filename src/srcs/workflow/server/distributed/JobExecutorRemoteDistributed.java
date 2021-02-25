@@ -16,13 +16,11 @@ public class JobExecutorRemoteDistributed extends JobExecutor{
 
     @Override
     public Map<String, Object> execute() throws Exception {
-    	System.out.println("Je commence le execute");
 
     	Registry registry = LocateRegistry.getRegistry("localhost");
         
         TaskMaster master = (TaskMaster) registry.lookup("Master");
         long id = master.executeTask(jobV);
-        System.out.println("l'id du travaille que je demande est : "+id);
         //attendre que la réponse soit positive
         try {
 			while(!master.isJobReady(id)) 
@@ -30,7 +28,6 @@ public class JobExecutorRemoteDistributed extends JobExecutor{
 		} catch (InterruptedException | RemoteException e) {
 			e.printStackTrace();
 		}
-        System.out.println("my job is ready");
         return master.getJob(id);
     }
     
