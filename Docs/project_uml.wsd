@@ -1,0 +1,84 @@
+@startuml uml
+
+
+
+class SearchBar #fec89a {
+
+}
+
+class SelectView #fec89a {
+
+}
+
+class FirstView #fec89a {
+}
+
+class JobPost #26CE6E {
+    -str : job_title
+    -str : company
+    -str : location
+    -str : job_summary
+    -str : salary
+    -str : post_date
+    -str : extract_date
+    -str : job_url
+}
+
+class DataBaseConnector #26CE6E {
+    +void saveToDataBase(file : str)
+    +void getDataFromBase(file : str)
+}
+
+class ConnectToKeep #26CE6E {
+    +void saveOffre(post : JobPost)
+}
+
+JobPost "*" <--  SelectView
+JobPost "*" <--  Scraper
+
+DataBaseConnector <-- SearchBar
+SelectView --> SearchBar
+SelectView --> ConnectToKeep
+FirstView --> SelectView 
+
+class JobLauncher #90e0ef {
+    +void getSearch(search : str)
+    +void getSearchFrom(search : str ,name : str)
+}
+
+
+class ScraperFactory #90e0ef {
+    +Scraper buildAll()
+}
+
+abstract class Scraper #90e0ef {
+    -str name
+	+void gatherData()
+}
+
+class ScraperIndeed #90e0ef {
+}
+
+class ScraperSAP #90e0ef {
+}
+
+class ScraperWTJ #90e0ef {
+}
+
+class ScraperThales #90e0ef {
+}
+
+class ScraperSG #90e0ef {
+}
+
+JobLauncher --> DataBaseConnector 
+JobLauncher --> "*" Scraper
+Scraper  <|-- ScraperThales    
+Scraper  <|-- ScraperSG
+Scraper  <|-- ScraperWTJ
+Scraper  <|-- ScraperIndeed
+Scraper  <|-- ScraperSAP
+JobLauncher --> "1" ScraperFactory
+
+
+@enduml
